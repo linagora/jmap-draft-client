@@ -1,7 +1,7 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client');
+    jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The ServerCapabilities class', function() {
   describe('The constructor', function() {
@@ -16,11 +16,11 @@ describe('The ServerCapabilities class', function() {
     };
 
     it('should use default values if opts is not defined', function() {
-      expect(new jmap.ServerCapabilities()).to.deep.equal(defaultValues);
+      expect(new jmapDraft.ServerCapabilities()).to.deep.equal(defaultValues);
     });
 
     it('should use default values if an empty opts object is given', function() {
-      expect(new jmap.ServerCapabilities()).to.deep.equal(defaultValues);
+      expect(new jmapDraft.ServerCapabilities()).to.deep.equal(defaultValues);
     });
 
     it('should allow defining values through the opts object', function() {
@@ -34,7 +34,7 @@ describe('The ServerCapabilities class', function() {
         maxObjectsInSet: 100
       };
 
-      expect(new jmap.ServerCapabilities(opts)).to.deep.equal(opts);
+      expect(new jmapDraft.ServerCapabilities(opts)).to.deep.equal(opts);
     });
 
   });

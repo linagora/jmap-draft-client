@@ -1,14 +1,14 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client');
+    jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The MessageList class', function() {
 
   describe('The constructor', function() {
 
     it('should use default values for all fields if not defined', function() {
-      var msgList = new jmap.MessageList({});
+      var msgList = new jmapDraft.MessageList({});
 
       expect(msgList.accountId).to.equal('');
       expect(msgList.filter).to.equal(null);
@@ -21,7 +21,7 @@ describe('The MessageList class', function() {
     });
 
     it('should use default values for all fields when an empty opts object is given', function() {
-      var msgList = new jmap.MessageList({}, {});
+      var msgList = new jmapDraft.MessageList({}, {});
 
       expect(msgList.accountId).to.equal('');
       expect(msgList.filter).to.equal(null);
@@ -34,7 +34,7 @@ describe('The MessageList class', function() {
     });
 
     it('should allow defining optional properties through the opts object', function() {
-      expect(new jmap.MessageList({}, { accountId: 'id' }).accountId).to.equal('id');
+      expect(new jmapDraft.MessageList({}, { accountId: 'id' }).accountId).to.equal('id');
     });
 
   });
@@ -42,7 +42,7 @@ describe('The MessageList class', function() {
   describe('The getThreads method', function() {
 
     it('should delegate to the jmap client, passing ids in the options, when no options are given', function(done) {
-      new jmap.MessageList({
+      new jmapDraft.MessageList({
         getThreads: function(options) {
           expect(options).to.deep.equal({
             ids: ['id1', 'id2']
@@ -56,7 +56,7 @@ describe('The MessageList class', function() {
     });
 
     it('should preserve other options', function(done) {
-      new jmap.MessageList({
+      new jmapDraft.MessageList({
         getThreads: function(options) {
           expect(options).to.deep.equal({
             ids: ['id1', 'id2'],
@@ -75,7 +75,7 @@ describe('The MessageList class', function() {
   describe('The getMessages method', function() {
 
     it('should delegate to the jmap client, passing ids in the options, when no options are given', function(done) {
-      new jmap.MessageList({
+      new jmapDraft.MessageList({
         getMessages: function(options) {
           expect(options).to.deep.equal({
             ids: ['id1', 'id2']
@@ -89,7 +89,7 @@ describe('The MessageList class', function() {
     });
 
     it('should preserve other options', function(done) {
-      new jmap.MessageList({
+      new jmapDraft.MessageList({
         getMessages: function(options) {
           expect(options).to.deep.equal({
             ids: ['id1', 'id2'],
@@ -109,16 +109,16 @@ describe('The MessageList class', function() {
 
     it('should throw an Error if object is not defined', function() {
       expect(function() {
-        jmap.MessageList.fromJSONObject({});
+        jmapDraft.MessageList.fromJSONObject({});
       }).to.throw(Error);
     });
 
     it('should return an instance of MessageList', function() {
-      expect(jmap.MessageList.fromJSONObject({}, {})).to.be.an.instanceof(jmap.MessageList);
+      expect(jmapDraft.MessageList.fromJSONObject({}, {})).to.be.an.instanceof(jmapDraft.MessageList);
     });
 
     it('should use default values for for all fields if not defined', function() {
-      var msgList = jmap.MessageList.fromJSONObject({}, {});
+      var msgList = jmapDraft.MessageList.fromJSONObject({}, {});
 
       expect(msgList.accountId).to.equal('');
       expect(msgList.filter).to.equal(null);
@@ -131,7 +131,7 @@ describe('The MessageList class', function() {
     });
 
     it('should copy values for all fields if defined', function() {
-      var msgList = jmap.MessageList.fromJSONObject({}, {
+      var msgList = jmapDraft.MessageList.fromJSONObject({}, {
         accountId: 'id',
         filter: {
           inMailboxes: ['inbox']

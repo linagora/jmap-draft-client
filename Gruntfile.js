@@ -12,7 +12,7 @@ module.exports = function(grunt) {
       dist: 'dist',
       doc: 'doc',
       apidoc: '<%= project.doc %>/api',
-      name: 'jmap-client'
+      name: 'jmap-draft-client'
     },
 
     uglify: {
@@ -148,7 +148,7 @@ module.exports = function(grunt) {
             ]
           ],
           browserifyOptions: {
-            standalone: 'jmap'
+            standalone: 'jmapDraft'
           },
           external: [
             'request',
@@ -156,7 +156,7 @@ module.exports = function(grunt) {
           ]
         },
         files: {
-          '<%= project.dist %>/jmap-client.js': ['<%= project.lib %>/API.js']
+          '<%= project.dist %>/jmap-draft-client.js': ['<%= project.lib %>/API.js']
         }
       }
     },

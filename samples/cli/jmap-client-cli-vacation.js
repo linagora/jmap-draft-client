@@ -1,9 +1,9 @@
 'use strict';
 
-var jmap = require('../../dist/jmap-client.min'),
+var jmapDraft = require('../../dist/jmap-draft-client.min'),
     options = require('node-getopt').create([ ['', 'token=ARG', ''], ['', 'url=ARG', ''] ]).parseSystem().options;
 
-new jmap.Client(new jmap.RequestTransport(), new jmap.QPromiseProvider())
+new jmapDraft.Client(new jmapDraft.RequestTransport(), new jmapDraft.QPromiseProvider())
   .withAPIUrl(options.url)
   .withAuthenticationToken(options.token)
   .getVacationResponse()

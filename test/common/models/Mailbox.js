@@ -1,7 +1,7 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client');
+    jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The Mailbox class', function() {
 
@@ -9,22 +9,22 @@ describe('The Mailbox class', function() {
 
     it('should throw an Error if id is not defined', function() {
       expect(function() {
-        new jmap.Mailbox({});
+        new jmapDraft.Mailbox({});
       }).to.throw(Error);
     });
 
     it('should throw an Error if name is not defined', function() {
       expect(function() {
-        new jmap.Mailbox({}, 'id');
+        new jmapDraft.Mailbox({}, 'id');
       }).to.throw(Error);
     });
 
     it('should use default values for all other fields if not defined', function() {
-      var mailbox = new jmap.Mailbox({}, 'id', 'name');
+      var mailbox = new jmapDraft.Mailbox({}, 'id', 'name');
 
       expect(mailbox.namespace).to.deep.equal({});
       expect(mailbox.parentId).to.equal(null);
-      expect(mailbox.role).to.equal(jmap.MailboxRole.UNKNOWN);
+      expect(mailbox.role).to.equal(jmapDraft.MailboxRole.UNKNOWN);
       expect(mailbox.sharedWith).to.deep.equal({});
       expect(mailbox.sortOrder).to.equal(0);
       expect(mailbox.mustBeOnlyMailbox).to.equal(false);
@@ -42,11 +42,11 @@ describe('The Mailbox class', function() {
     });
 
     it('should use default values for all other fields if an empty opts object is given', function() {
-      var mailbox = new jmap.Mailbox({}, 'id', 'name', {});
+      var mailbox = new jmapDraft.Mailbox({}, 'id', 'name', {});
 
       expect(mailbox.namespace).to.deep.equal({});
       expect(mailbox.parentId).to.equal(null);
-      expect(mailbox.role).to.equal(jmap.MailboxRole.UNKNOWN);
+      expect(mailbox.role).to.equal(jmapDraft.MailboxRole.UNKNOWN);
       expect(mailbox.sharedWith).to.deep.equal({});
       expect(mailbox.sortOrder).to.equal(0);
       expect(mailbox.mustBeOnlyMailbox).to.equal(false);
@@ -64,7 +64,7 @@ describe('The Mailbox class', function() {
     });
 
     it('should allow defining optional properties through the opts object', function() {
-      expect(new jmap.Mailbox({}, 'id', 'name', { totalMessages: 10 }).totalMessages).to.equal(10);
+      expect(new jmapDraft.Mailbox({}, 'id', 'name', { totalMessages: 10 }).totalMessages).to.equal(10);
     });
 
   });
@@ -72,7 +72,7 @@ describe('The Mailbox class', function() {
   describe('The getMessageList method', function() {
 
     it('should delegate to the jmap client, passing an inMailboxes filter in the options, when no options are given', function(done) {
-      new jmap.Mailbox({
+      new jmapDraft.Mailbox({
         getMessageList: function(options) {
           expect(options).to.deep.equal({
             filter: {
@@ -86,7 +86,7 @@ describe('The Mailbox class', function() {
     });
 
     it('should preserve other options', function(done) {
-      new jmap.Mailbox({
+      new jmapDraft.Mailbox({
         getMessageList: function(options) {
           expect(options).to.deep.equal({
             filter: {
@@ -107,32 +107,32 @@ describe('The Mailbox class', function() {
 
     it('should throw an Error if object is not defined', function() {
       expect(function() {
-        jmap.Mailbox.fromJSONObject({});
+        jmapDraft.Mailbox.fromJSONObject({});
       }).to.throw(Error);
     });
 
     it('should throw an Error if object.id is not defined', function() {
       expect(function() {
-        jmap.Mailbox.fromJSONObject({}, {});
+        jmapDraft.Mailbox.fromJSONObject({}, {});
       }).to.throw(Error);
     });
 
     it('should throw an Error if object.name is not defined', function() {
       expect(function() {
-        jmap.Mailbox.fromJSONObject({}, { id: 'id' });
+        jmapDraft.Mailbox.fromJSONObject({}, { id: 'id' });
       }).to.throw(Error);
     });
 
     it('should return an instance of Mailbox', function() {
-      expect(jmap.Mailbox.fromJSONObject({}, { id: 'id', name: 'name' })).to.be.an.instanceof(jmap.Mailbox);
+      expect(jmapDraft.Mailbox.fromJSONObject({}, { id: 'id', name: 'name' })).to.be.an.instanceof(jmapDraft.Mailbox);
     });
 
     it('should use default values for for all other fields if not defined', function() {
-      var mailbox = jmap.Mailbox.fromJSONObject({}, { id: 'id', name: 'name' });
+      var mailbox = jmapDraft.Mailbox.fromJSONObject({}, { id: 'id', name: 'name' });
 
       expect(mailbox.namespace).to.deep.equal({});
       expect(mailbox.parentId).to.equal(null);
-      expect(mailbox.role).to.equal(jmap.MailboxRole.UNKNOWN);
+      expect(mailbox.role).to.equal(jmapDraft.MailboxRole.UNKNOWN);
       expect(mailbox.sharedWith).to.deep.equal({});
       expect(mailbox.sortOrder).to.equal(0);
       expect(mailbox.mustBeOnlyMailbox).to.equal(false);
@@ -150,7 +150,7 @@ describe('The Mailbox class', function() {
     });
 
     it('should copy values for id, name, and all other fields if defined', function() {
-      var mailbox = jmap.Mailbox.fromJSONObject({}, {
+      var mailbox = jmapDraft.Mailbox.fromJSONObject({}, {
         id: 'id',
         name: 'name',
         namespace: {
@@ -178,7 +178,7 @@ describe('The Mailbox class', function() {
       expect(mailbox.name).to.equal('name');
       expect(mailbox.namespace.type).to.equal('Personal');
       expect(mailbox.parentId).to.equal('parentId');
-      expect(mailbox.role).to.equal(jmap.MailboxRole.INBOX);
+      expect(mailbox.role).to.equal(jmapDraft.MailboxRole.INBOX);
       expect(mailbox.sharedWith).to.deep.equal({});
       expect(mailbox.sortOrder).to.equal(1);
       expect(mailbox.mustBeOnlyMailbox).to.equal(true);
@@ -200,7 +200,7 @@ describe('The Mailbox class', function() {
   describe('The update method', function() {
 
     it('should delegate to the jmap client, passing the id and the given options', function(done) {
-      new jmap.Mailbox({
+      new jmapDraft.Mailbox({
         updateMailbox: function(id, options) {
           expect(id).to.equal('id');
           expect(options).to.deep.equal({ newAttr1: 'newAttr1', newAttr2: 'newAttr2' });
@@ -215,7 +215,7 @@ describe('The Mailbox class', function() {
   describe('The destroy method', function() {
 
     it('should delegate to the jmap client, passing the id as arg', function(done) {
-      new jmap.Mailbox({
+      new jmapDraft.Mailbox({
         destroyMailbox: function(id) {
           expect(id).to.equal('id');
 

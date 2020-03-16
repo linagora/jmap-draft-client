@@ -1,7 +1,7 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client'),
+    jmapDraft = require('../../../dist/jmap-draft-client'),
     q = require('q');
 
 describe('The Thread class', function() {
@@ -10,20 +10,20 @@ describe('The Thread class', function() {
 
     it('should throw an Error if id is not defined', function() {
       expect(function() {
-        new jmap.Thread({});
+        new jmapDraft.Thread({});
       }).to.throw(Error);
     });
 
     it('should use default value for messageIds if not defined', function() {
-      expect(new jmap.Thread({}, 'id').messageIds).to.deep.equal([]);
+      expect(new jmapDraft.Thread({}, 'id').messageIds).to.deep.equal([]);
     });
 
     it('should use default value for messageIds if an empty opts object is given', function() {
-      expect(new jmap.Thread({}, 'id', {}).messageIds).to.deep.equal([]);
+      expect(new jmapDraft.Thread({}, 'id', {}).messageIds).to.deep.equal([]);
     });
 
     it('should allow defining messageIds through the opts object', function() {
-      expect(new jmap.Thread({}, 'id', { messageIds: ['id1'] }).messageIds).to.deep.equal(['id1']);
+      expect(new jmapDraft.Thread({}, 'id', { messageIds: ['id1'] }).messageIds).to.deep.equal(['id1']);
     });
 
   });
@@ -31,7 +31,7 @@ describe('The Thread class', function() {
   describe('The getMessages method', function() {
 
     it('should delegate to the jmap client, passing ids in the options, when no options are given', function(done) {
-      new jmap.Thread({
+      new jmapDraft.Thread({
         getMessages: function(options) {
           expect(options).to.deep.equal({
             ids: ['id1', 'id2']
@@ -45,7 +45,7 @@ describe('The Thread class', function() {
     });
 
     it('should preserve other options', function(done) {
-      new jmap.Thread({
+      new jmapDraft.Thread({
         getMessages: function(options) {
           expect(options).to.deep.equal({
             ids: ['id1', 'id2'],
@@ -64,7 +64,7 @@ describe('The Thread class', function() {
   describe('The destroy method', function() {
 
     it('should delegate to the jmap client, passing ids in the options', function(done) {
-      new jmap.Thread({
+      new jmapDraft.Thread({
         destroyMessages: function(ids) {
           expect(ids).to.deep.equal(['id1', 'id2']);
 
@@ -80,7 +80,7 @@ describe('The Thread class', function() {
   describe('The moveToMailboxWithRole method', function() {
 
     it('should delegate to the jmap client, passing the correct options', function(done) {
-      new jmap.Thread({
+      new jmapDraft.Thread({
         getMailboxWithRole: function(role) {
           expect(role).to.equal('inbox');
 
@@ -107,7 +107,7 @@ describe('The Thread class', function() {
   describe('The move method', function() {
 
     it('should delegate to the jmap client, passing the correct options', function(done) {
-      new jmap.Thread({
+      new jmapDraft.Thread({
         setMessages: function(options) {
           expect(options).to.deep.equal({
             update: {
@@ -130,18 +130,18 @@ describe('The Thread class', function() {
 
     it('should throw an Error if isFlagged is not defined', function() {
       expect(function() {
-        jmap.Thread.setIsFlagged();
+        jmapDraft.Thread.setIsFlagged();
       }).to.throw(Error);
     });
 
     it('should throw an Error if isFlagged is not a Boolean', function() {
       expect(function() {
-        jmap.Thread.setIsFlagged(1);
+        jmapDraft.Thread.setIsFlagged(1);
       }).to.throw(Error);
     });
 
     it('should delegate to the jmap client, passing the correct options', function(done) {
-      new jmap.Thread({
+      new jmapDraft.Thread({
         setMessages: function(options) {
           expect(options).to.deep.equal({
             update: {
@@ -164,18 +164,18 @@ describe('The Thread class', function() {
 
     it('should throw an Error if isUnread is not defined', function() {
       expect(function() {
-        jmap.Thread.setIsUnread();
+        jmapDraft.Thread.setIsUnread();
       }).to.throw(Error);
     });
 
     it('should throw an Error if isUnread is not a Boolean', function() {
       expect(function() {
-        jmap.Thread.setIsUnread(1);
+        jmapDraft.Thread.setIsUnread(1);
       }).to.throw(Error);
     });
 
     it('should delegate to the jmap client, passing the correct options', function(done) {
-      new jmap.Thread({
+      new jmapDraft.Thread({
         setMessages: function(options) {
           expect(options).to.deep.equal({
             update: {
@@ -198,26 +198,26 @@ describe('The Thread class', function() {
 
     it('should throw an Error if object is not defined', function() {
       expect(function() {
-        jmap.Thread.fromJSONObject({});
+        jmapDraft.Thread.fromJSONObject({});
       }).to.throw(Error);
     });
 
     it('should throw an Error if object.id is not defined', function() {
       expect(function() {
-        jmap.Thread.fromJSONObject({}, {});
+        jmapDraft.Thread.fromJSONObject({}, {});
       }).to.throw(Error);
     });
 
     it('should return an instance of Thread', function() {
-      expect(jmap.Thread.fromJSONObject({}, { id: 'id' })).to.be.an.instanceof(jmap.Thread);
+      expect(jmapDraft.Thread.fromJSONObject({}, { id: 'id' })).to.be.an.instanceof(jmapDraft.Thread);
     });
 
     it('should use default value for messageIds if not defined', function() {
-      expect(jmap.Thread.fromJSONObject({}, { id: 'id' }).messageIds).to.deep.equal([]);
+      expect(jmapDraft.Thread.fromJSONObject({}, { id: 'id' }).messageIds).to.deep.equal([]);
     });
 
     it('should copy value for messageIds if defined', function() {
-      var thread = jmap.Thread.fromJSONObject({}, {
+      var thread = jmapDraft.Thread.fromJSONObject({}, {
         id: 'id',
         messageIds: ['id1', 'id2']
       });

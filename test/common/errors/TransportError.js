@@ -1,16 +1,16 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client');
+    jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The TransportError class', function() {
 
   it('should be an Error', function() {
-    expect(new jmap.TransportError()).to.be.a.instanceof(Error);
+    expect(new jmapDraft.TransportError()).to.be.a.instanceof(Error);
   });
 
   it('should default cause, statusCode and responseText', function() {
-    var error = new jmap.TransportError();
+    var error = new jmapDraft.TransportError();
 
     expect(error.cause).to.equal(null);
     expect(error.statusCode).to.equal(0);
@@ -18,7 +18,7 @@ describe('The TransportError class', function() {
   });
 
   it('should expose cause, statusCode and responseText as members', function() {
-    var error = new jmap.TransportError('a', 1, 'b');
+    var error = new jmapDraft.TransportError('a', 1, 'b');
 
     expect(error.cause).to.equal('a');
     expect(error.statusCode).to.equal(1);

@@ -1,7 +1,7 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client'),
+    jmapDraft = require('../../../dist/jmap-draft-client'),
     q = require('q');
 
 describe('The Attachment class', function() {
@@ -10,18 +10,18 @@ describe('The Attachment class', function() {
 
     it('should throw an Error if blobId is not defined', function() {
       expect(function() {
-        new jmap.Attachment({});
+        new jmapDraft.Attachment({});
       }).to.throw(Error);
     });
 
     it('should throw an Error if blobId is null', function() {
       expect(function() {
-        new jmap.Attachment({}, null);
+        new jmapDraft.Attachment({}, null);
       }).to.throw(Error);
     });
 
     it('should use default value for all other fields if not defined', function() {
-      var attachment = new jmap.Attachment({}, 'blobId');
+      var attachment = new jmapDraft.Attachment({}, 'blobId');
 
       expect(attachment.blobId).to.equal('blobId');
       expect(attachment.url).to.equal(null);
@@ -35,7 +35,7 @@ describe('The Attachment class', function() {
     });
 
     it('should use default value for all other fields iif an empty opts object is given', function() {
-      var attachment = new jmap.Attachment({}, 'blobId', {});
+      var attachment = new jmapDraft.Attachment({}, 'blobId', {});
 
       expect(attachment.blobId).to.equal('blobId');
       expect(attachment.url).to.equal(null);
@@ -49,7 +49,7 @@ describe('The Attachment class', function() {
     });
 
     it('should allow defining other fields through the opts object', function() {
-      var attachment = new jmap.Attachment({}, 'blobId', {
+      var attachment = new jmapDraft.Attachment({}, 'blobId', {
         url: 'https://jmap.org/download/blob/blobId/filename',
         type: 'application/javascript',
         name: 'jmap.js',
@@ -72,11 +72,11 @@ describe('The Attachment class', function() {
     });
 
     it('should not guess the url if client has no downloadUrl', function() {
-      expect(new jmap.Attachment({}, 'blobId', {}).url).to.equal(null);
+      expect(new jmapDraft.Attachment({}, 'blobId', {}).url).to.equal(null);
     });
 
     it('should guess the url if client has no downloadUrl, setting blobId and name template variables', function() {
-      expect(new jmap.Attachment({
+      expect(new jmapDraft.Attachment({
         downloadUrl: 'https://jmap.org/dl/{blobId}/{name}'
       }, '1234', {
         name: 'file.js'
@@ -84,7 +84,7 @@ describe('The Attachment class', function() {
     });
 
     it('should guess the url if client has no downloadUrl, using blobId as name if not defined', function() {
-      expect(new jmap.Attachment({
+      expect(new jmapDraft.Attachment({
         downloadUrl: 'https://jmap.org/dl/{blobId}/{name}'
       }, '1234').url).to.equal('https://jmap.org/dl/1234/1234');
     });
@@ -95,22 +95,22 @@ describe('The Attachment class', function() {
 
     it('should throw an Error if object is not defined', function() {
       expect(function() {
-        jmap.Attachment.fromJSONObject({});
+        jmapDraft.Attachment.fromJSONObject({});
       }).to.throw(Error);
     });
 
     it('should throw an Error if object.blobId is not defined', function() {
       expect(function() {
-        jmap.Attachment.fromJSONObject({}, {});
+        jmapDraft.Attachment.fromJSONObject({}, {});
       }).to.throw(Error);
     });
 
     it('should return an instance of Attachment', function() {
-      expect(jmap.Attachment.fromJSONObject({}, { blobId: 'blobId' })).to.be.an.instanceof(jmap.Attachment);
+      expect(jmapDraft.Attachment.fromJSONObject({}, { blobId: 'blobId' })).to.be.an.instanceof(jmapDraft.Attachment);
     });
 
     it('should use default values for for all other fields if not defined', function() {
-      var attachment = jmap.Attachment.fromJSONObject({}, { blobId: 'blobId' });
+      var attachment = jmapDraft.Attachment.fromJSONObject({}, { blobId: 'blobId' });
 
       expect(attachment.url).to.equal(null);
       expect(attachment.type).to.equal(null);
@@ -123,7 +123,7 @@ describe('The Attachment class', function() {
     });
 
     it('should copy values for all other fields if defined', function() {
-      var attachment = jmap.Attachment.fromJSONObject({}, {
+      var attachment = jmapDraft.Attachment.fromJSONObject({}, {
         blobId: 'blobId',
         url: 'https://jmap.org/download/blob/blobId/filename',
         type: 'application/javascript',
@@ -151,7 +151,7 @@ describe('The Attachment class', function() {
   describe('The toJSONObject', function() {
 
     it('should produce blobId only object when no opts', function() {
-      expect(new jmap.Attachment({}, 'blobId', {}).toJSONObject()).to.deep.equal({
+      expect(new jmapDraft.Attachment({}, 'blobId', {}).toJSONObject()).to.deep.equal({
         blobId: 'blobId',
         size: 0,
         isInline: false
@@ -159,7 +159,7 @@ describe('The Attachment class', function() {
     });
 
     it('should produce partial json when only few opts', function() {
-      var attachment = new jmap.Attachment({}, 'blobId', {
+      var attachment = new jmapDraft.Attachment({}, 'blobId', {
         name: 'jmap.js',
         isInline: false
       });
@@ -173,7 +173,7 @@ describe('The Attachment class', function() {
     });
 
     it('should produce full json when full opts', function() {
-      var attachment = new jmap.Attachment({}, 'blobId', {
+      var attachment = new jmapDraft.Attachment({}, 'blobId', {
         url: 'https://jmap.org/download/blob/blobId/filename',
         type: 'application/javascript',
         name: 'jmap.js',
@@ -202,7 +202,7 @@ describe('The Attachment class', function() {
   describe('The getSignedDownloadUrl method', function() {
 
     function newClient(post) {
-      return new jmap.Client({
+      return new jmapDraft.Client({
         post: post
       })
         .withAuthenticationToken('token')
@@ -211,12 +211,12 @@ describe('The Attachment class', function() {
 
     it('should throw an Error if url is not defined', function() {
       expect(function() {
-        new jmap.Attachment({}, 'blobId').getSignedDownloadUrl();
+        new jmapDraft.Attachment({}, 'blobId').getSignedDownloadUrl();
       }).to.throw(Error);
     });
 
     it('should send an authenticated POST request to the downloadUrl, and reject on failure', function(done) {
-      new jmap.Attachment(newClient(function(url, headers, data, raw) {
+      new jmapDraft.Attachment(newClient(function(url, headers, data, raw) {
         expect(url).to.equal('downloadUrl/id1');
         expect(headers.Authorization).to.equal('token');
         expect(data).to.equal(null);
@@ -229,7 +229,7 @@ describe('The Attachment class', function() {
     });
 
     it('should send an authenticated POST request to the downloadUrl, then forge the signed URL using the token', function(done) {
-      new jmap.Attachment(newClient(function() {
+      new jmapDraft.Attachment(newClient(function() {
         return q('superSecretToken');
       }), 'id1')
         .getSignedDownloadUrl()

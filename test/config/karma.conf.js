@@ -41,7 +41,7 @@ module.exports = function(config) {
       'node_modules/jquery-mockjax/dist/jquery.mockjax.js',
       'node_modules/sinon/pkg/sinon.js',
       'node_modules/sinon-chai/lib/sinon-chai.js',
-      'dist/jmap-client.js',
+      'dist/jmap-draft-client.js',
       // This must be here, before the actual tests
       'test/frontend/require.js',
       // Tests

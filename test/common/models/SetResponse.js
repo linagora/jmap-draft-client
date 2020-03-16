@@ -1,14 +1,14 @@
 'use strict';
 
 var expect = require('chai').expect,
-  jmap = require('../../../dist/jmap-client');
+  jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The SetResponse class', function() {
 
   describe('The constructor', function() {
 
     it('should use default values for all fields if not defined', function() {
-      var response = new jmap.SetResponse({});
+      var response = new jmapDraft.SetResponse({});
 
       expect(response.accountId).to.equal(null);
       expect(response.oldState).to.equal(null);
@@ -24,7 +24,7 @@ describe('The SetResponse class', function() {
     });
 
     it('should allow defining optional properties through the opts object', function() {
-      expect(new jmap.SetResponse({}, { accountId: 'id' }).accountId).to.equal('id');
+      expect(new jmapDraft.SetResponse({}, { accountId: 'id' }).accountId).to.equal('id');
     });
 
   });
@@ -33,16 +33,16 @@ describe('The SetResponse class', function() {
 
     it('should throw an Error if object is not defined', function() {
       expect(function() {
-        jmap.SetResponse.fromJSONObject({});
+        jmapDraft.SetResponse.fromJSONObject({});
       }).to.throw(Error);
     });
 
     it('should return an instance of SetResponse', function() {
-      expect(jmap.SetResponse.fromJSONObject({}, {})).to.be.an.instanceof(jmap.SetResponse);
+      expect(jmapDraft.SetResponse.fromJSONObject({}, {})).to.be.an.instanceof(jmapDraft.SetResponse);
     });
 
     it('should use default values for for all fields if not defined', function() {
-      var response = jmap.SetResponse.fromJSONObject({}, {});
+      var response = jmapDraft.SetResponse.fromJSONObject({}, {});
 
       expect(response.accountId).to.equal(null);
       expect(response.oldState).to.equal(null);
@@ -58,7 +58,7 @@ describe('The SetResponse class', function() {
     });
 
     it('should copy values for all fields if defined', function() {
-      var response = jmap.SetResponse.fromJSONObject({}, {
+      var response = jmapDraft.SetResponse.fromJSONObject({}, {
         accountId: 'id',
         created: {
           ABCD: {

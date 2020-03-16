@@ -1,6 +1,6 @@
 'use strict';
 
-var jmap = require('../../dist/jmap-client.min'),
+var jmapDraft = require('../../dist/jmap-draft-client.min'),
     q = require('q'),
     options = require('node-getopt')
     .create([ ['', 'authUrl=ARG', ''], ['', 'username=ARG', ''], ['', 'deviceName=ARG', ''] ])
@@ -10,7 +10,7 @@ function continuationCallback(authContinuation) {
   return q.resolve(authContinuation.continuationToken);
 }
 
-var client = new jmap.Client(new jmap.RequestTransport(), new jmap.QPromiseProvider())
+var client = new jmapDraft.Client(new jmapDraft.RequestTransport(), new jmapDraft.QPromiseProvider())
   .withAuthenticationUrl(options.authUrl)
   .authExternal(options.username, options.deviceName, continuationCallback)
   .then(function(authAccess) {

@@ -1,14 +1,14 @@
 'use strict';
 
 var expect = require('chai').expect,
-  jmap = require('../../../dist/jmap-client'),
+  jmapDraft = require('../../../dist/jmap-draft-client'),
   sinon = require('sinon');
 
 describe('The FilterRule class', function () {
   context('class logic', function () {
     describe('the constructor', function () {
       it('should initialise an id', function () {
-        var target = new jmap.FilterRule(null, '');
+        var target = new jmapDraft.FilterRule(null, '');
 
         expect(target.id).to.exist;
       });
@@ -16,7 +16,7 @@ describe('The FilterRule class', function () {
 
     describe('toJSONObject', function () {
       it('should assert condition is defined', function () {
-        var target = new jmap.FilterRule(null, '').then.moveTo.mailboxId('').filterRule;
+        var target = new jmapDraft.FilterRule(null, '').then.moveTo.mailboxId('').filterRule;
 
         expect(function () {
           target.toJSONObject();
@@ -24,8 +24,8 @@ describe('The FilterRule class', function () {
       });
 
       it('should assert action is defined', function () {
-        var target = new jmap.FilterRule(null, '')
-          .when.from.value('').comparator(jmap.FilterRule.Comparator.EXACTLY_EQUALS).filterRule;
+        var target = new jmapDraft.FilterRule(null, '')
+          .when.from.value('').comparator(jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS).filterRule;
 
         expect(function () {
           target.toJSONObject();
@@ -33,8 +33,8 @@ describe('The FilterRule class', function () {
       });
 
       it('should validate condition', function () {
-        var target = new jmap.FilterRule(null, '').then.moveTo.mailboxId('')
-          .when.from.value('').comparator(jmap.FilterRule.Comparator.EXACTLY_EQUALS).filterRule;
+        var target = new jmapDraft.FilterRule(null, '').then.moveTo.mailboxId('')
+          .when.from.value('').comparator(jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS).filterRule;
 
         sinon.spy(target.filterCondition, '_validate');
 
@@ -44,8 +44,8 @@ describe('The FilterRule class', function () {
       });
 
       it('should validate action', function () {
-        var target = new jmap.FilterRule(null, '').then.moveTo.mailboxId('')
-          .when.from.value('').comparator(jmap.FilterRule.Comparator.EXACTLY_EQUALS).filterRule;
+        var target = new jmapDraft.FilterRule(null, '').then.moveTo.mailboxId('')
+          .when.from.value('').comparator(jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS).filterRule;
 
         sinon.spy(target.filterAction, '_validate');
 
@@ -55,8 +55,8 @@ describe('The FilterRule class', function () {
       });
 
       it('should generate a JSON object', function () {
-        var target = new jmap.FilterRule(null, 'My rule').then.moveTo.mailboxId('')
-          .when.from.value('').comparator(jmap.FilterRule.Comparator.EXACTLY_EQUALS).filterRule;
+        var target = new jmapDraft.FilterRule(null, 'My rule').then.moveTo.mailboxId('')
+          .when.from.value('').comparator(jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS).filterRule;
 
         target.id = 'id';
 
@@ -78,7 +78,7 @@ describe('The FilterRule class', function () {
       var target;
 
       beforeEach(function () {
-        target = new jmap.FilterRule(null, 'My rule');
+        target = new jmapDraft.FilterRule(null, 'My rule');
         target.id = 'e71a07e5-1985-4c8e-9979-8c8671d8e76f';
         target.filterAction = {
           _toJSONObject: function () {
@@ -91,14 +91,14 @@ describe('The FilterRule class', function () {
 
       describe('from', function () {
         it('should build the JSON object', function () {
-          target.when.from.value('admin@open-paas.org').comparator(jmap.FilterRule.Comparator.EXACTLY_EQUALS);
+          target.when.from.value('admin@open-paas.org').comparator(jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS);
 
           expect(target.toJSONObject()).to.eql({
             id: 'e71a07e5-1985-4c8e-9979-8c8671d8e76f',
             name: 'My rule',
             condition: {
               field: 'from',
-              comparator: jmap.FilterRule.Comparator.EXACTLY_EQUALS,
+              comparator: jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS,
               value: 'admin@open-paas.org',
             },
             action: { filterAction: '_toJSONObject' }
@@ -108,14 +108,14 @@ describe('The FilterRule class', function () {
 
       describe('to', function () {
         it('should build the JSON object', function () {
-          target.when.to.value('admin@open-paas.org').comparator(jmap.FilterRule.Comparator.EXACTLY_EQUALS);
+          target.when.to.value('admin@open-paas.org').comparator(jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS);
 
           expect(target.toJSONObject()).to.eql({
             id: 'e71a07e5-1985-4c8e-9979-8c8671d8e76f',
             name: 'My rule',
             condition: {
               field: 'to',
-              comparator: jmap.FilterRule.Comparator.EXACTLY_EQUALS,
+              comparator: jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS,
               value: 'admin@open-paas.org',
             },
             action: { filterAction: '_toJSONObject' }
@@ -125,14 +125,14 @@ describe('The FilterRule class', function () {
 
       describe('cc', function () {
         it('should build the JSON object', function () {
-          target.when.cc.value('admin@open-paas.org').comparator(jmap.FilterRule.Comparator.EXACTLY_EQUALS);
+          target.when.cc.value('admin@open-paas.org').comparator(jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS);
 
           expect(target.toJSONObject()).to.eql({
             id: 'e71a07e5-1985-4c8e-9979-8c8671d8e76f',
             name: 'My rule',
             condition: {
               field: 'cc',
-              comparator: jmap.FilterRule.Comparator.EXACTLY_EQUALS,
+              comparator: jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS,
               value: 'admin@open-paas.org',
             },
             action: { filterAction: '_toJSONObject' }
@@ -142,14 +142,14 @@ describe('The FilterRule class', function () {
 
       describe('recipient', function () {
         it('should build the JSON object', function () {
-          target.when.recipient.value('admin@open-paas.org').comparator(jmap.FilterRule.Comparator.EXACTLY_EQUALS);
+          target.when.recipient.value('admin@open-paas.org').comparator(jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS);
 
           expect(target.toJSONObject()).to.eql({
             id: 'e71a07e5-1985-4c8e-9979-8c8671d8e76f',
             name: 'My rule',
             condition: {
               field: 'recipient',
-              comparator: jmap.FilterRule.Comparator.EXACTLY_EQUALS,
+              comparator: jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS,
               value: 'admin@open-paas.org',
             },
             action: { filterAction: '_toJSONObject' }
@@ -159,14 +159,14 @@ describe('The FilterRule class', function () {
 
       describe('subject', function () {
         it('should build the JSON object', function () {
-          target.when.subject.value('email subject').comparator(jmap.FilterRule.Comparator.EXACTLY_EQUALS);
+          target.when.subject.value('email subject').comparator(jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS);
 
           expect(target.toJSONObject()).to.eql({
             id: 'e71a07e5-1985-4c8e-9979-8c8671d8e76f',
             name: 'My rule',
             condition: {
               field: 'subject',
-              comparator: jmap.FilterRule.Comparator.EXACTLY_EQUALS,
+              comparator: jmapDraft.FilterRule.Comparator.EXACTLY_EQUALS,
               value: 'email subject',
             },
             action: { filterAction: '_toJSONObject' }
@@ -179,7 +179,7 @@ describe('The FilterRule class', function () {
       var target;
 
       beforeEach(function () {
-        target = new jmap.FilterRule(null, 'My rule');
+        target = new jmapDraft.FilterRule(null, 'My rule');
         target.id = 'e71a07e5-1985-4c8e-9979-8c8671d8e76f';
         target.filterCondition = {
           _toJSONObject: function () {

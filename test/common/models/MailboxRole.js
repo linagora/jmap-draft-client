@@ -1,31 +1,31 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client');
+    jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The MailboxRole class', function() {
 
   describe('The fromRole method', function() {
 
     it('should return MailboxRole.UNKNOWN when the role is not defined', function() {
-      expect(jmap.MailboxRole.fromRole()).to.equal(jmap.MailboxRole.UNKNOWN);
+      expect(jmapDraft.MailboxRole.fromRole()).to.equal(jmapDraft.MailboxRole.UNKNOWN);
     });
 
     it('should return MailboxRole.UNKNOWN when the role is null', function() {
-      expect(jmap.MailboxRole.fromRole(null)).to.equal(jmap.MailboxRole.UNKNOWN);
+      expect(jmapDraft.MailboxRole.fromRole(null)).to.equal(jmapDraft.MailboxRole.UNKNOWN);
     });
 
     it('should return MailboxRole.UNKNOWN when the role is the empty String', function() {
-      expect(jmap.MailboxRole.fromRole('')).to.equal(jmap.MailboxRole.UNKNOWN);
+      expect(jmapDraft.MailboxRole.fromRole('')).to.equal(jmapDraft.MailboxRole.UNKNOWN);
     });
 
     it('should return MailboxRole.UNKNOWN when the role is not found', function() {
-      expect(jmap.MailboxRole.fromRole('test')).to.equal(jmap.MailboxRole.UNKNOWN);
+      expect(jmapDraft.MailboxRole.fromRole('test')).to.equal(jmapDraft.MailboxRole.UNKNOWN);
     });
 
     it('should return the correct MailboxRole for all predefined JMAP roles', function() {
       ['inbox', 'archive', 'drafts', 'outbox', 'sent', 'trash', 'spam', 'templates'].forEach(function(role) {
-        expect(jmap.MailboxRole.fromRole(role)).to.equal(jmap.MailboxRole[role.toUpperCase()]);
+        expect(jmapDraft.MailboxRole.fromRole(role)).to.equal(jmapDraft.MailboxRole[role.toUpperCase()]);
       });
     });
 
@@ -33,12 +33,12 @@ describe('The MailboxRole class', function() {
 
   it('should contain class constants for predefined JMAP roles', function() {
     ['inbox', 'archive', 'drafts', 'outbox', 'sent', 'trash', 'spam', 'templates'].forEach(function(role) {
-      expect(jmap.MailboxRole[role.toUpperCase()].value).to.equal(role);
+      expect(jmapDraft.MailboxRole[role.toUpperCase()].value).to.equal(role);
     });
   });
 
   it('should expose the UNKNOWN role', function() {
-    expect(jmap.MailboxRole.UNKNOWN.value).to.equal(null);
+    expect(jmapDraft.MailboxRole.UNKNOWN.value).to.equal(null);
   });
 
 });

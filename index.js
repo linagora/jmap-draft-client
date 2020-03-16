@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = exports = require('./dist/jmap-client.min.js');
+module.exports = exports = require('./dist/jmap-draft-client.min.js');
