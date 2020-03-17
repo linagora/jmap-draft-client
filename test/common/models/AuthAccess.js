@@ -1,7 +1,7 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client');
+    jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The AuthAccess class', function() {
   function defaultAccounts(id) {
@@ -20,7 +20,7 @@ describe('The AuthAccess class', function() {
   describe('constructor', function() {
     it('should throw if payload parameter is not defined', function() {
       expect(function() {
-        new jmap.AuthAccess();
+        new jmapDraft.AuthAccess();
       }).to.throw(Error);
     });
 
@@ -34,7 +34,7 @@ describe('The AuthAccess class', function() {
       };
 
       expect(function() {
-        new jmap.AuthAccess({}, payload);
+        new jmapDraft.AuthAccess({}, payload);
       }).to.throw(Error);
     });
 
@@ -52,7 +52,7 @@ describe('The AuthAccess class', function() {
       };
 
       expect(function() {
-        new jmap.AuthAccess({}, payload);
+        new jmapDraft.AuthAccess({}, payload);
       }).to.throw(Error);
     });
 
@@ -70,7 +70,7 @@ describe('The AuthAccess class', function() {
       };
 
       expect(function() {
-        new jmap.AuthAccess({}, payload);
+        new jmapDraft.AuthAccess({}, payload);
       }).to.throw(Error);
     });
 
@@ -88,7 +88,7 @@ describe('The AuthAccess class', function() {
       };
 
       expect(function() {
-        new jmap.AuthAccess({}, payload);
+        new jmapDraft.AuthAccess({}, payload);
       }).to.throw(Error);
     });
 
@@ -106,7 +106,7 @@ describe('The AuthAccess class', function() {
       };
 
       expect(function() {
-        new jmap.AuthAccess({}, payload);
+        new jmapDraft.AuthAccess({}, payload);
       }).to.throw(Error);
     });
 
@@ -124,7 +124,7 @@ describe('The AuthAccess class', function() {
       };
 
       expect(function() {
-        new jmap.AuthAccess({}, payload);
+        new jmapDraft.AuthAccess({}, payload);
       }).to.throw(Error);
     });
 
@@ -142,7 +142,7 @@ describe('The AuthAccess class', function() {
       };
 
       expect(function() {
-        new jmap.AuthAccess({}, payload);
+        new jmapDraft.AuthAccess({}, payload);
       }).to.throw(Error);
     });
 
@@ -160,7 +160,7 @@ describe('The AuthAccess class', function() {
       };
 
       expect(function() {
-        new jmap.AuthAccess({}, payload);
+        new jmapDraft.AuthAccess({}, payload);
       }).to.throw(Error);
     });
 
@@ -178,7 +178,7 @@ describe('The AuthAccess class', function() {
       };
 
       expect(function() {
-        new jmap.AuthAccess({}, payload);
+        new jmapDraft.AuthAccess({}, payload);
       }).to.throw(Error);
     });
 
@@ -196,7 +196,7 @@ describe('The AuthAccess class', function() {
       };
 
       expect(function() {
-        new jmap.AuthAccess({}, payload);
+        new jmapDraft.AuthAccess({}, payload);
       }).to.throw(Error);
     });
 
@@ -216,17 +216,17 @@ describe('The AuthAccess class', function() {
         }
       };
 
-      payload.capabilities[jmap.Constants.CORE_CAPABILITIES_URI] = {
+      payload.capabilities[jmapDraft.Constants.CORE_CAPABILITIES_URI] = {
         maxSizeUpload: 2048,
         maxSizeRequest: 4096,
       };
 
-      payload.capabilities[jmap.Constants.MAIL_CAPABILITIES_URI] = {
+      payload.capabilities[jmapDraft.Constants.MAIL_CAPABILITIES_URI] = {
         maxSizeMessageAttachments: 2048,
         maxDelayedSend: 600,
       };
 
-      var authToken = new jmap.AuthAccess({}, payload);
+      var authToken = new jmapDraft.AuthAccess({}, payload);
 
       ['username', 'accessToken', 'signingId', 'signingKey', 'apiUrl', 'eventSourceUrl', 'uploadUrl', 'downloadUrl'].forEach(function(property) {
         expect(authToken[property]).to.equal(payload[property]);
@@ -234,15 +234,15 @@ describe('The AuthAccess class', function() {
 
       expect(authToken).to.have.property('accounts');
       expect(authToken.accounts).to.be.an.instanceof(Object);
-      expect(authToken.accounts.account1).to.be.an.instanceof(jmap.Account);
+      expect(authToken.accounts.account1).to.be.an.instanceof(jmapDraft.Account);
 
       expect(authToken).to.have.property('serverCapabilities');
-      expect(authToken.serverCapabilities).to.be.an.instanceof(jmap.ServerCapabilities);
+      expect(authToken.serverCapabilities).to.be.an.instanceof(jmapDraft.ServerCapabilities);
       expect(authToken.serverCapabilities.maxSizeRequest).to.equal(4096);
       expect(authToken.serverCapabilities.maxSizeUpload).to.equal(2048);
 
       expect(authToken).to.have.property('mailCapabilities');
-      expect(authToken.mailCapabilities).to.be.an.instanceof(jmap.MailCapabilities);
+      expect(authToken.mailCapabilities).to.be.an.instanceof(jmapDraft.MailCapabilities);
       expect(authToken.mailCapabilities.maxSizeMessageAttachments).to.equal(2048);
       expect(authToken.mailCapabilities.maxDelayedSend).to.equal(600);
     });
@@ -264,7 +264,7 @@ describe('The AuthAccess class', function() {
         capabilities: {}
       };
 
-      payload.capabilities[jmap.Constants.CORE_CAPABILITIES_URI] = {
+      payload.capabilities[jmapDraft.Constants.CORE_CAPABILITIES_URI] = {
         maxCallsInRequest: 1,
         maxConcurrentRequests: 2,
         maxConcurrentUpload: 2,
@@ -274,7 +274,7 @@ describe('The AuthAccess class', function() {
         maxSizeUpload: 1024,
       };
 
-      var authAccess = new jmap.AuthAccess({}, payload);
+      var authAccess = new jmapDraft.AuthAccess({}, payload);
 
       expect(authAccess.toJSONObject()).to.deep.equal(payload);
     });

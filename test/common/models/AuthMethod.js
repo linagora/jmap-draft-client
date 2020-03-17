@@ -1,13 +1,13 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client');
+    jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The AuthMethod class', function() {
   describe('constructor', function() {
     it('should throw if payload parameter is not defined', function() {
       expect(function() {
-        new jmap.AuthMethod();
+        new jmapDraft.AuthMethod();
       }).to.throw(Error);
     });
 
@@ -15,7 +15,7 @@ describe('The AuthMethod class', function() {
       expect(function() {
         var payload = {};
 
-        new jmap.AuthMethod(payload);
+        new jmapDraft.AuthMethod(payload);
       }).to.throw(Error);
     });
 
@@ -23,13 +23,13 @@ describe('The AuthMethod class', function() {
       expect(function() {
         var payload = { type: [] };
 
-        new jmap.AuthMethod(payload);
+        new jmapDraft.AuthMethod(payload);
       }).to.throw(Error);
     });
 
     it('should expose the type property', function() {
       var payload = { type: 'password' };
-      var authMethod = new jmap.AuthMethod(payload);
+      var authMethod = new jmapDraft.AuthMethod(payload);
 
       expect(authMethod.type).to.equal(payload.type);
     });
@@ -40,7 +40,7 @@ describe('The AuthMethod class', function() {
         appId: 'app-id',
         signChallenge: 'xyz'
       };
-      var authMethod = new jmap.AuthMethod(payload);
+      var authMethod = new jmapDraft.AuthMethod(payload);
 
       expect(authMethod).to.deep.equal(payload);
     });

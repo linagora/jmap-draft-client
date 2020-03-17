@@ -1,7 +1,7 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client');
+    jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The CreateMessageAck class', function() {
 
@@ -20,41 +20,41 @@ describe('The CreateMessageAck class', function() {
 
     it('should throw an Error if response has not the expected type', function() {
       expect(function() {
-        new jmap.CreateMessageAck({}, []);
+        new jmapDraft.CreateMessageAck({}, []);
       }).to.throw(Error);
 
       expect(function() {
-        new jmap.CreateMessageAck({}, 'bla');
+        new jmapDraft.CreateMessageAck({}, 'bla');
       }).to.throw(Error);
 
       expect(function() {
-        new jmap.CreateMessageAck({}, function() {});
+        new jmapDraft.CreateMessageAck({}, function() {});
       }).to.throw(Error);
     });
 
     it('should throw an Error if response.blobId is not defined', function() {
       expect(function() {
         delete usualResponse.blobId;
-        new jmap.CreateMessageAck({}, usualResponse);
+        new jmapDraft.CreateMessageAck({}, usualResponse);
       }).to.throw(Error);
     });
 
     it('should throw an Error if response.size is not defined', function() {
       expect(function() {
         delete usualResponse.size;
-        new jmap.CreateMessageAck({}, usualResponse);
+        new jmapDraft.CreateMessageAck({}, usualResponse);
       }).to.throw(Error);
     });
 
     it('should throw an Error if response.size has not the expected type', function() {
       expect(function() {
         usualResponse.size = 'number expected';
-        new jmap.CreateMessageAck({}, usualResponse);
+        new jmapDraft.CreateMessageAck({}, usualResponse);
       }).to.throw(Error);
     });
 
     it('should assign responses fields as object properties', function() {
-      expect(new jmap.CreateMessageAck({}, usualResponse))
+      expect(new jmapDraft.CreateMessageAck({}, usualResponse))
         .to.deep.equal({
           _jmap: {},
           id: 'id',

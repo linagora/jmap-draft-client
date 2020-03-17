@@ -1,11 +1,11 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client'),
+    jmapDraft = require('../../../dist/jmap-draft-client'),
     mockery = require('mockery');
 
 function newTransport() {
-  return new jmap.RequestTransport(new jmap.QPromiseProvider());
+  return new jmapDraft.RequestTransport(new jmapDraft.QPromiseProvider());
 }
 
 describe('The RequestTransport class', function() {
@@ -23,7 +23,7 @@ describe('The RequestTransport class', function() {
   });
 
   function expectTransportError(err, cause, statusCode, responseText) {
-    expect(err).to.be.a.instanceof(jmap.TransportError);
+    expect(err).to.be.a.instanceof(jmapDraft.TransportError);
     expect(err.cause).to.equal(cause);
     expect(err.statusCode).to.equal(statusCode);
     expect(err.responseText).to.equal(responseText);

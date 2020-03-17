@@ -1,7 +1,7 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client');
+    jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The OutboundMessage class', function() {
 
@@ -27,19 +27,19 @@ describe('The OutboundMessage class', function() {
     }
 
     it('should use default values for fields if opts is not defined', function() {
-      var message = new jmap.OutboundMessage({});
+      var message = new jmapDraft.OutboundMessage({});
 
       expectDefaultValues(message);
     });
 
     it('should use default values for fields if opts is empty', function() {
-      var message = new jmap.OutboundMessage({}, {});
+      var message = new jmapDraft.OutboundMessage({}, {});
 
       expectDefaultValues(message);
     });
 
     it('should allow defining optional properties through the opts object', function() {
-      var message = new jmap.OutboundMessage({}, {
+      var message = new jmapDraft.OutboundMessage({}, {
         mailboxIds: ['1', '5'],
         inReplyToMessageId: 'inReplyToMessageId',
         isUnread: true,
@@ -73,7 +73,7 @@ describe('The OutboundMessage class', function() {
       expect(message.subject).to.equal('subject');
       expect(message.textBody).to.equal('textBody');
       expect(message.htmlBody).to.equal('htmlBody');
-      expect(message.attachments).to.deep.equal([new jmap.Attachment({}, 'att')]);
+      expect(message.attachments).to.deep.equal([new jmapDraft.Attachment({}, 'att')]);
     });
 
   });
@@ -81,7 +81,7 @@ describe('The OutboundMessage class', function() {
   describe('The toJSONObject', function() {
 
     it('should produce empty object when no opts', function() {
-      expect(new jmap.OutboundMessage({}, {}).toJSONObject()).to.deep.equal({});
+      expect(new jmapDraft.OutboundMessage({}, {}).toJSONObject()).to.deep.equal({});
     });
 
     it('should produce partial json when only few opts', function() {
@@ -90,7 +90,7 @@ describe('The OutboundMessage class', function() {
         htmlBody: 'htmlBody'
       };
 
-      expect(new jmap.OutboundMessage({}, opts).toJSONObject()).to.deep.equal(opts);
+      expect(new jmapDraft.OutboundMessage({}, opts).toJSONObject()).to.deep.equal(opts);
     });
 
     it('should produce full json when full opts', function() {
@@ -113,7 +113,7 @@ describe('The OutboundMessage class', function() {
         attachments: [{ blobId: 'att', size: 0, isInline: true }]
       };
 
-      expect(new jmap.OutboundMessage({}, opts).toJSONObject()).to.deep.equal(opts);
+      expect(new jmapDraft.OutboundMessage({}, opts).toJSONObject()).to.deep.equal(opts);
     });
 
   });

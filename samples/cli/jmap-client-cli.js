@@ -1,7 +1,7 @@
 'use strict';
 
 var util = require('util'),
-    jmap = require('../../dist/jmap-client.min'),
+    jmapDraft = require('../../dist/jmap-draft-client.min'),
     q = require('q'),
     options = require('node-getopt').create([ ['', 'token=ARG', ''], ['', 'url=ARG', ''] ]).parseSystem().options;
 
@@ -9,7 +9,7 @@ function oneline(value) {
   return util.inspect(value).split('\n').join(' ');
 }
 
-new jmap.Client(new jmap.RequestTransport(), new jmap.QPromiseProvider())
+new jmapDraft.Client(new jmapDraft.RequestTransport(), new jmapDraft.QPromiseProvider())
   .withAPIUrl(options.url)
   .withAuthenticationToken(options.token)
   .getAccounts()

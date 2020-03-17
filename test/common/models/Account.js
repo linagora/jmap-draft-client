@@ -1,7 +1,7 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client');
+    jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The Account class', function() {
 
@@ -20,16 +20,16 @@ describe('The Account class', function() {
 
     it('should throw an Error if id is not defined', function() {
       expect(function() {
-        new jmap.Account({});
+        new jmapDraft.Account({});
       }).to.throw(Error);
     });
 
     it('should use default values if opts is not defined', function() {
-      expect(new jmap.Account({}, 'id')).to.deep.equal(accountWithDefaultValues('id'));
+      expect(new jmapDraft.Account({}, 'id')).to.deep.equal(accountWithDefaultValues('id'));
     });
 
     it('should use default values if an empty opts object is given', function() {
-      expect(new jmap.Account({}, 'id', {})).to.deep.equal(accountWithDefaultValues('id'));
+      expect(new jmapDraft.Account({}, 'id', {})).to.deep.equal(accountWithDefaultValues('id'));
     });
 
     it('should allow defining optional properties through the opts object', function() {
@@ -39,7 +39,7 @@ describe('The Account class', function() {
         isReadOnly: false,
         hasDataFor: ['mail', 'contacts', 'calendars']
       };
-      var account = new jmap.Account({}, 'id', expectedAccount);
+      var account = new jmapDraft.Account({}, 'id', expectedAccount);
 
       expectedAccount._jmap = {};
       expectedAccount.id = 'id';
@@ -52,7 +52,7 @@ describe('The Account class', function() {
   describe('The getMailboxes method', function() {
 
     it('should delegate to the jmap client, passing the accountId in the options', function(done) {
-      new jmap.Account({
+      new jmapDraft.Account({
         getMailboxes: function(options) {
           expect(options.accountId).to.equal('id');
 
@@ -62,7 +62,7 @@ describe('The Account class', function() {
     });
 
     it('should preserve other options', function(done) {
-      new jmap.Account({
+      new jmapDraft.Account({
         getMailboxes: function(options) {
           expect(options).to.deep.equal({
             accountId: 'id',
@@ -81,26 +81,26 @@ describe('The Account class', function() {
 
     it('should throw an Error if object is not defined', function() {
       expect(function() {
-        jmap.Account.fromJSONObject({});
+        jmapDraft.Account.fromJSONObject({});
       }).to.throw(Error);
     });
 
     it('should throw an Error if object.id is not defined', function() {
       expect(function() {
-        jmap.Account.fromJSONObject({}, {});
+        jmapDraft.Account.fromJSONObject({}, {});
       }).to.throw(Error);
     });
 
     it('should return an instance of Account', function() {
-      expect(jmap.Account.fromJSONObject({}, { id: 'id' })).to.be.an.instanceof(jmap.Account);
+      expect(jmapDraft.Account.fromJSONObject({}, { id: 'id' })).to.be.an.instanceof(jmapDraft.Account);
     });
 
     it('should use default values if no opts is given', function() {
-      expect(jmap.Account.fromJSONObject({}, { id: 'myId' })).to.deep.equal(accountWithDefaultValues('myId'));
+      expect(jmapDraft.Account.fromJSONObject({}, { id: 'myId' })).to.deep.equal(accountWithDefaultValues('myId'));
     });
 
     it('should copy values for id, name and isPrimary if defined', function() {
-      var account = jmap.Account.fromJSONObject({}, {
+      var account = jmapDraft.Account.fromJSONObject({}, {
         id: 'id',
         name: 'name',
         isPrimary: true,
@@ -119,11 +119,11 @@ describe('The Account class', function() {
   describe('The hasMail method', function() {
 
     it('should return false when the account has no mail capabilities', function() {
-      expect(new jmap.Account({}, 'id').hasMail()).to.equal(false);
+      expect(new jmapDraft.Account({}, 'id').hasMail()).to.equal(false);
     });
 
     it('should return true when the account has mail capabilities defined', function() {
-      expect(new jmap.Account({}, 'id', { hasDataFor: ['mail'] }).hasMail()).to.equal(true);
+      expect(new jmapDraft.Account({}, 'id', { hasDataFor: ['mail'] }).hasMail()).to.equal(true);
     });
 
   });
@@ -131,11 +131,11 @@ describe('The Account class', function() {
   describe('The hasCalendars method', function() {
 
     it('should return false when the account has no calendars capabilities', function() {
-      expect(new jmap.Account({}, 'id').hasCalendars()).to.equal(false);
+      expect(new jmapDraft.Account({}, 'id').hasCalendars()).to.equal(false);
     });
 
     it('should return true when the account has calendars capabilities defined', function() {
-      expect(new jmap.Account({}, 'id', { hasDataFor: ['calendars'] }).hasCalendars()).to.equal(true);
+      expect(new jmapDraft.Account({}, 'id', { hasDataFor: ['calendars'] }).hasCalendars()).to.equal(true);
     });
 
   });
@@ -143,11 +143,11 @@ describe('The Account class', function() {
   describe('The hasContacts method', function() {
 
     it('should return false when the account has no contacts capabilities', function() {
-      expect(new jmap.Account({}, 'id').hasContacts()).to.equal(false);
+      expect(new jmapDraft.Account({}, 'id').hasContacts()).to.equal(false);
     });
 
     it('should return true when the account has contacts capabilities defined', function() {
-      expect(new jmap.Account({}, 'id', { hasDataFor: ['contacts'] }).hasContacts()).to.equal(true);
+      expect(new jmapDraft.Account({}, 'id', { hasDataFor: ['contacts'] }).hasContacts()).to.equal(true);
     });
 
   });

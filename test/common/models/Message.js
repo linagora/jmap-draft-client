@@ -1,7 +1,7 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client'),
+    jmapDraft = require('../../../dist/jmap-draft-client'),
     q = require('q');
 
 require('chai').use(require('chai-datetime'));
@@ -12,42 +12,42 @@ describe('The Message class', function() {
 
     it('should throw an Error if id is not defined', function() {
       expect(function() {
-        new jmap.Message({});
+        new jmapDraft.Message({});
       }).to.throw(Error);
     });
 
     it('should throw an Error if blobId is not defined', function() {
       expect(function() {
-        new jmap.Message({}, 'id');
+        new jmapDraft.Message({}, 'id');
       }).to.throw(Error, 'blobId');
     });
 
     it('should throw an Error if threadId is not defined', function() {
       expect(function() {
-        new jmap.Message({}, 'id', 'blobId');
+        new jmapDraft.Message({}, 'id', 'blobId');
       }).to.throw(Error, 'threadId');
     });
 
     it('should throw an Error if mailboxIds is not defined', function() {
       expect(function() {
-        new jmap.Message({}, 'id', 'blobId', 'threadId');
+        new jmapDraft.Message({}, 'id', 'blobId', 'threadId');
       }).to.throw(Error, 'mailboxIds');
     });
 
     it('should throw an Error if mailboxIds is not an array', function() {
       expect(function() {
-        new jmap.Message({}, 'id', 'blobId', 'threadId', 'mailboxId');
+        new jmapDraft.Message({}, 'id', 'blobId', 'threadId', 'mailboxId');
       }).to.throw(Error, 'mailboxIds');
     });
 
     it('should throw an Error if mailboxIds is zero-length', function() {
       expect(function() {
-        new jmap.Message({}, 'id', 'blobId', 'threadId', []);
+        new jmapDraft.Message({}, 'id', 'blobId', 'threadId', []);
       }).to.throw(Error, 'mailboxIds');
     });
 
     it('should use default values for all other fields if not defined', function() {
-      var message = new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox']);
+      var message = new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox']);
 
       expect(message.inReplyToMessageId).to.equal(null);
       expect(message.isUnread).to.equal(false);
@@ -57,7 +57,7 @@ describe('The Message class', function() {
       expect(message.isDraft).to.equal(false);
       expect(message.hasAttachment).to.equal(false);
       expect(message.headers).to.deep.equal({});
-      expect(message.from).to.deep.equal(jmap.EMailer.unknown());
+      expect(message.from).to.deep.equal(jmapDraft.EMailer.unknown());
       expect(message.to).to.deep.equal([]);
       expect(message.cc).to.deep.equal([]);
       expect(message.bcc).to.deep.equal([]);
@@ -71,7 +71,7 @@ describe('The Message class', function() {
     });
 
     it('should use default values for all other fields if an empty opts object is given', function() {
-      var message = new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {});
+      var message = new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {});
 
       expect(message.inReplyToMessageId).to.equal(null);
       expect(message.isUnread).to.equal(false);
@@ -81,7 +81,7 @@ describe('The Message class', function() {
       expect(message.isDraft).to.equal(false);
       expect(message.hasAttachment).to.equal(false);
       expect(message.headers).to.deep.equal({});
-      expect(message.from).to.deep.equal(jmap.EMailer.unknown());
+      expect(message.from).to.deep.equal(jmapDraft.EMailer.unknown());
       expect(message.to).to.deep.equal([]);
       expect(message.cc).to.deep.equal([]);
       expect(message.bcc).to.deep.equal([]);
@@ -95,7 +95,7 @@ describe('The Message class', function() {
     });
 
     it('should allow defining optional properties through the opts object', function() {
-      var message = new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
+      var message = new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
         from: [{
           name: '',
           email: 'me@open-paas.org'
@@ -104,18 +104,18 @@ describe('The Message class', function() {
       });
 
       expect(message.subject).to.equal('subject');
-      expect(message.from).to.deep.equal(new jmap.EMailer({
+      expect(message.from).to.deep.equal(new jmapDraft.EMailer({
         name: '',
         email: 'me@open-paas.org'
       }));
     });
 
     it('should set From to the unknown EMailer when not defined', function() {
-      expect(new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox']).from).to.deep.equal(jmap.EMailer.unknown());
+      expect(new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox']).from).to.deep.equal(jmapDraft.EMailer.unknown());
     });
 
     it('should take the first item of the From option', function() {
-      var message = new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
+      var message = new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
         from: [{
           name: '',
           email: 'me@open-paas.org'
@@ -125,28 +125,28 @@ describe('The Message class', function() {
         }]
       });
 
-      expect(message.from).to.deep.equal(new jmap.EMailer({
+      expect(message.from).to.deep.equal(new jmapDraft.EMailer({
         name: '',
         email: 'me@open-paas.org'
       }));
     });
 
     it('should support a single EMailer in the From option', function() {
-      var message = new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
+      var message = new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
         from: {
           name: 'notanarray',
           email: 'notanarray@open-paas.org'
         }
       });
 
-      expect(message.from).to.deep.equal(new jmap.EMailer({
+      expect(message.from).to.deep.equal(new jmapDraft.EMailer({
         name: 'notanarray',
         email: 'notanarray@open-paas.org'
       }));
     });
 
     it('should create EMailer instances for the To option', function() {
-      var message = new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
+      var message = new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
         to: [{
           name: '',
           email: 'me@open-paas.org'
@@ -157,13 +157,13 @@ describe('The Message class', function() {
       });
 
       expect(message.to).to.deep.equal([
-        new jmap.EMailer({ name: '', email: 'me@open-paas.org' }),
-        new jmap.EMailer({ name: 'another', email: 'another@linagora.com' })
+        new jmapDraft.EMailer({ name: '', email: 'me@open-paas.org' }),
+        new jmapDraft.EMailer({ name: 'another', email: 'another@linagora.com' })
       ]);
     });
 
     it('should create EMailer instances for the CC option', function() {
-      var message = new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
+      var message = new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
         cc: [{
           name: '',
           email: 'me@open-paas.org'
@@ -174,13 +174,13 @@ describe('The Message class', function() {
       });
 
       expect(message.cc).to.deep.equal([
-        new jmap.EMailer({ name: '', email: 'me@open-paas.org' }),
-        new jmap.EMailer({ name: 'another', email: 'another@linagora.com' })
+        new jmapDraft.EMailer({ name: '', email: 'me@open-paas.org' }),
+        new jmapDraft.EMailer({ name: 'another', email: 'another@linagora.com' })
       ]);
     });
 
     it('should create EMailer instances for the BCC option', function() {
-      var message = new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
+      var message = new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
         bcc: [{
           name: '',
           email: 'me@open-paas.org'
@@ -191,13 +191,13 @@ describe('The Message class', function() {
       });
 
       expect(message.bcc).to.deep.equal([
-        new jmap.EMailer({ name: '', email: 'me@open-paas.org' }),
-        new jmap.EMailer({ name: 'another', email: 'another@linagora.com' })
+        new jmapDraft.EMailer({ name: '', email: 'me@open-paas.org' }),
+        new jmapDraft.EMailer({ name: 'another', email: 'another@linagora.com' })
       ]);
     });
 
     it('should parse the message date as a Date object', function() {
-      var message = new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
+      var message = new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {
         date: '2015-09-23T12:34:56Z'
       });
 
@@ -205,7 +205,7 @@ describe('The Message class', function() {
     });
 
     it('should set attachments to an empty array if message has no attachments', function() {
-      expect(new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {}).attachments).to.deep.equal([]);
+      expect(new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox'], {}).attachments).to.deep.equal([]);
     });
 
     it('should set attachments to an array of Attachment objects if message has attachments', function() {
@@ -213,15 +213,15 @@ describe('The Message class', function() {
         downloadUrl: 'https://jmap.org/dl/{blobId}'
       };
 
-      expect(new jmap.Message(client, 'id', 'blobId', 'threadId', ['inbox'], {
+      expect(new jmapDraft.Message(client, 'id', 'blobId', 'threadId', ['inbox'], {
         attachments: [{
           blobId: '1234'
         }, {
           blobId: '5678'
         }]
       }).attachments).to.deep.equal([
-        new jmap.Attachment(client, '1234'),
-        new jmap.Attachment(client, '5678')
+        new jmapDraft.Attachment(client, '1234'),
+        new jmapDraft.Attachment(client, '5678')
       ]);
     });
 
@@ -231,46 +231,46 @@ describe('The Message class', function() {
 
     it('should throw an Error if object is not defined', function() {
       expect(function() {
-        jmap.Message.fromJSONObject({});
+        jmapDraft.Message.fromJSONObject({});
       }).to.throw(Error);
     });
 
     it('should throw an Error if object.id is not defined', function() {
       expect(function() {
-        jmap.Message.fromJSONObject({}, {});
+        jmapDraft.Message.fromJSONObject({}, {});
       }).to.throw(Error);
     });
 
     it('should throw an Error if object.threadId is not defined', function() {
       expect(function() {
-        jmap.Message.fromJSONObject({}, { id: 'id' });
+        jmapDraft.Message.fromJSONObject({}, { id: 'id' });
       }).to.throw(Error);
     });
 
     it('should throw an Error if object.mailboxIds is not defined', function() {
       expect(function() {
-        jmap.Message.fromJSONObject({}, { id: 'id', threadId: 'threadId' });
+        jmapDraft.Message.fromJSONObject({}, { id: 'id', threadId: 'threadId' });
       }).to.throw(Error);
     });
 
     it('should throw an Error if object.mailboxIds is not an array', function() {
       expect(function() {
-        jmap.Message.fromJSONObject({}, { id: 'id', threadId: 'threadId', mailboxIds: 'mailboxIds' });
+        jmapDraft.Message.fromJSONObject({}, { id: 'id', threadId: 'threadId', mailboxIds: 'mailboxIds' });
       }).to.throw(Error);
     });
 
     it('should throw an Error if object.mailboxIds is zero-length', function() {
       expect(function() {
-        jmap.Message.fromJSONObject({}, { id: 'id', threadId: 'threadId', mailboxIds: [] });
+        jmapDraft.Message.fromJSONObject({}, { id: 'id', threadId: 'threadId', mailboxIds: [] });
       }).to.throw(Error);
     });
 
     it('should return an instance of Message', function() {
-      expect(jmap.Message.fromJSONObject({}, { id: 'id', blobId: 'blobId', threadId: 'threadId', mailboxIds: ['mailboxId'] })).to.be.an.instanceof(jmap.Message);
+      expect(jmapDraft.Message.fromJSONObject({}, { id: 'id', blobId: 'blobId', threadId: 'threadId', mailboxIds: ['mailboxId'] })).to.be.an.instanceof(jmapDraft.Message);
     });
 
     it('should copy values for all other fields if defined', function() {
-      var message = jmap.Message.fromJSONObject({}, {
+      var message = jmapDraft.Message.fromJSONObject({}, {
         id: 'fm2u12',
         inReplyToMessageId: 'fm2u11',
         blobId: 'fed75e7fb4f512aa',
@@ -310,14 +310,14 @@ describe('The Message class', function() {
       expect(message.isDraft).to.equal(true);
       expect(message.hasAttachment).to.equal(true);
       expect(message.headers).to.deep.equal({ To: 'To' });
-      expect(message.from).to.deep.equal(new jmap.EMailer({
+      expect(message.from).to.deep.equal(new jmapDraft.EMailer({
         name: 'Jane Doe', email: 'janedoe@open-paas.org'
       }));
       expect(message.to).to.deep.equal([
-        new jmap.EMailer({ name: 'James Connor', email: 'jamesconnorwork@open-paas.org' }),
-        new jmap.EMailer({ name: 'Joe Bloggs', email: 'joebloggs@open-paas.org' })
+        new jmapDraft.EMailer({ name: 'James Connor', email: 'jamesconnorwork@open-paas.org' }),
+        new jmapDraft.EMailer({ name: 'Joe Bloggs', email: 'joebloggs@open-paas.org' })
       ]);
-      expect(message.replyTo).to.deep.equal(new jmap.EMailer({
+      expect(message.replyTo).to.deep.equal(new jmapDraft.EMailer({
         name: 'Jane Doe', email: 'janedoe@open-paas.org'
       }));
       expect(message.subject).to.equal('Re: I need the swallow velocity report ASAP');
@@ -333,7 +333,7 @@ describe('The Message class', function() {
   describe('The move method', function() {
 
     it('should delegate to the jmap client, passing the id and the given mailboxIds', function(done) {
-      new jmap.Message({
+      new jmapDraft.Message({
         moveMessage: function(id, mailboxIds) {
           expect(id).to.equal('id');
           expect(mailboxIds).to.deep.equal(['mailbox1', 'mailbox2']);
@@ -348,7 +348,7 @@ describe('The Message class', function() {
   describe('The update method', function() {
 
     it('should delegate to the jmap client, passing the id and the given options', function(done) {
-      new jmap.Message({
+      new jmapDraft.Message({
         updateMessage: function(id, option) {
           expect(id).to.equal('id');
           expect(option).to.deep.equal({ property: 'property' });
@@ -363,7 +363,7 @@ describe('The Message class', function() {
 
     it('should throw an Error if isFlagged is not provided', function() {
       expect(function() {
-        new jmap.Message({
+        new jmapDraft.Message({
           updateMessage: function() {}
         }, 'id', 'threadId', ['inbox']).setIsFlagged();
       }).to.throw(Error);
@@ -371,14 +371,14 @@ describe('The Message class', function() {
 
     it('should throw an Error if isFlagged is not Boolean', function() {
       expect(function() {
-        new jmap.Message({
+        new jmapDraft.Message({
           updateMessage: function() {}
         }, 'id', 'threadId', ['inbox']).setIsFlagged('true');
       }).to.throw(Error);
     });
 
     it('should delegate to message.update, passing the required option', function(done) {
-      var message = new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox']);
+      var message = new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox']);
 
       message.update = function(option) {
         expect(option).to.deep.equal({ isFlagged: true });
@@ -392,7 +392,7 @@ describe('The Message class', function() {
 
     it('should throw an Error if isUnread is not provided', function() {
       expect(function() {
-        new jmap.Message({
+        new jmapDraft.Message({
           updateMessage: function() {}
         }, 'id', 'threadId', ['inbox']).setIsUnread();
       }).to.throw(Error);
@@ -400,14 +400,14 @@ describe('The Message class', function() {
 
     it('should throw an Error if isUnread is not Boolean', function() {
       expect(function() {
-        new jmap.Message({
+        new jmapDraft.Message({
           updateMessage: function() {}
         }, 'id', 'threadId', ['inbox']).setIsUnread('true');
       }).to.throw(Error);
     });
 
     it('should delegate to message.update, passing the required option', function(done) {
-      var message = new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox']);
+      var message = new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox']);
 
       message.update = function(option) {
         expect(option).to.deep.equal({ isUnread: true });
@@ -421,7 +421,7 @@ describe('The Message class', function() {
 
     it('should throw an Error if isAnswered is not provided', function() {
       expect(function() {
-        new jmap.Message({
+        new jmapDraft.Message({
           updateMessage: function() {}
         }, 'id', 'threadId', ['inbox']).setIsAnswered();
       }).to.throw(Error);
@@ -429,14 +429,14 @@ describe('The Message class', function() {
 
     it('should throw an Error if isAnswered is not Boolean', function() {
       expect(function() {
-        new jmap.Message({
+        new jmapDraft.Message({
           updateMessage: function() {}
         }, 'id', 'threadId', ['inbox']).setIsAnswered('true');
       }).to.throw(Error);
     });
 
     it('should delegate to message.update, passing the required option', function(done) {
-      var message = new jmap.Message({}, 'id', 'blobId', 'threadId', ['inbox']);
+      var message = new jmapDraft.Message({}, 'id', 'blobId', 'threadId', ['inbox']);
 
       message.update = function(option) {
         expect(option).to.deep.equal({ isAnswered: true });
@@ -449,7 +449,7 @@ describe('The Message class', function() {
   describe('The destroy method', function() {
 
     it('should delegate to the jmap client, passing the id as arg', function(done) {
-      new jmap.Message({
+      new jmapDraft.Message({
         destroyMessage: function(id) {
           expect(id).to.equal('id');
 
@@ -463,15 +463,15 @@ describe('The Message class', function() {
   describe('The moveToMailboxWithRole method', function() {
 
     it('should support a MailboxRole argument', function(done) {
-      new jmap.Message({
+      new jmapDraft.Message({
         getMailboxWithRole: function() {
           return q.reject();
         }
-      }, 'id', 'blobId', 'threadId', ['inbox']).moveToMailboxWithRole(jmap.MailboxRole.TRASH).then(null, done);
+      }, 'id', 'blobId', 'threadId', ['inbox']).moveToMailboxWithRole(jmapDraft.MailboxRole.TRASH).then(null, done);
     });
 
     it('should support a String argument, when it maps to a JMAP role', function(done) {
-      new jmap.Message({
+      new jmapDraft.Message({
         getMailboxWithRole: function() {
           return q.reject();
         }
@@ -480,18 +480,18 @@ describe('The Message class', function() {
 
     it('should throw an Error if the role is UNKNOWN', function() {
       expect(function() {
-        new jmap.Message(new jmap.Client({}), 'id', 'blobId', 'threadId', ['inbox']).moveToMailboxWithRole(jmap.MailboxRole.UNKNOWN);
+        new jmapDraft.Message(new jmapDraft.Client({}), 'id', 'blobId', 'threadId', ['inbox']).moveToMailboxWithRole(jmapDraft.MailboxRole.UNKNOWN);
       }).to.throw(Error);
     });
 
     it('should throw an Error if the role is an unknown String', function() {
       expect(function() {
-        new jmap.Message(new jmap.Client({}), 'id', 'blobId', 'threadId', ['inbox']).moveToMailboxWithRole('test');
+        new jmapDraft.Message(new jmapDraft.Client({}), 'id', 'blobId', 'threadId', ['inbox']).moveToMailboxWithRole('test');
       }).to.throw(Error);
     });
 
     it('should delegate to move if the mailbox exists, passing its id', function(done) {
-      new jmap.Message({
+      new jmapDraft.Message({
         getMailboxWithRole: function() {
           return q({ id: 'mailboxId' });
         },
@@ -504,7 +504,7 @@ describe('The Message class', function() {
     });
 
     it('should reject the promise if the mailbox does not exist', function(done) {
-      new jmap.Message({
+      new jmapDraft.Message({
         getMailboxWithRole: function() {
           return q.reject('Does not exist !');
         }

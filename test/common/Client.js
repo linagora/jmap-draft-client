@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect,
     sinon = require('sinon'),
-    jmap = require('../../dist/jmap-client'),
+    jmapDraft = require('../../dist/jmap-draft-client'),
     q = require('q');
 
 require('chai').use(require('chai-shallow-deep-equal'));
@@ -24,7 +24,7 @@ describe('The Client class', function() {
   };
 
   function defaultClient() {
-    return new jmap.Client({
+    return new jmapDraft.Client({
       post: function() {
         return q.reject();
       }
@@ -35,21 +35,21 @@ describe('The Client class', function() {
 
     it('should throw an Error if transport is not defined', function() {
       expect(function() {
-        new jmap.Client();
+        new jmapDraft.Client();
       }).to.throw(Error);
     });
 
     it('should set transport.promiseProvider to the given promise provider', function() {
       var promiseProvider = { promise: 'provider' },
-          client = new jmap.Client({}, promiseProvider);
+          client = new jmapDraft.Client({}, promiseProvider);
 
       expect(client.transport.promiseProvider).to.deep.equal(promiseProvider);
     });
 
     it('should set transport.promiseProvider to an instance of ES6PromiseProvider by default', function() {
-      var client = new jmap.Client({});
+      var client = new jmapDraft.Client({});
 
-      expect(client.transport.promiseProvider).to.be.an.instanceof(jmap.ES6PromiseProvider);
+      expect(client.transport.promiseProvider).to.be.an.instanceof(jmapDraft.ES6PromiseProvider);
     });
 
   });
@@ -88,7 +88,7 @@ describe('The Client class', function() {
 
   describe('The withAuthAccess method', function() {
 
-    var authAccess = new jmap.AuthAccess(defaultClient(), {
+    var authAccess = new jmapDraft.AuthAccess(defaultClient(), {
       username: 'user',
       accessToken: 'accessToken1',
       signingId: 'signId1',
@@ -115,8 +115,8 @@ describe('The Client class', function() {
       ['username', 'apiUrl', 'eventSourceUrl', 'uploadUrl', 'downloadUrl', 'signingId', 'signingKey'].forEach(function(property) {
         expect(client[property]).to.equal(authAccess[property]);
       });
-      expect(client.serverCapabilities).to.be.an.instanceof(jmap.ServerCapabilities);
-      expect(client.mailCapabilities).to.be.an.instanceof(jmap.MailCapabilities);
+      expect(client.serverCapabilities).to.be.an.instanceof(jmapDraft.ServerCapabilities);
+      expect(client.mailCapabilities).to.be.an.instanceof(jmapDraft.MailCapabilities);
     });
 
     it('should accept a plain json object', function() {
@@ -137,7 +137,7 @@ describe('The Client class', function() {
         { id: 'id', name: 'test2', role: 'non-custom-mailbox' }
       ];
 
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() { return q([['mailboxes', { list: mailboxes }, '#0']]); }
       })
         .withCustomMailboxRoles(['for-test'])
@@ -168,7 +168,7 @@ describe('The Client class', function() {
     }
 
     it('should post on the API url', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url) {
           expect(url).to.equal('https://test');
 
@@ -182,7 +182,7 @@ describe('The Client class', function() {
     });
 
     it('should send correct HTTP headers, including Authorization=token', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers) {
           expect(headers).to.deep.equal({
             Authorization: 'token',
@@ -200,7 +200,7 @@ describe('The Client class', function() {
     });
 
     it('should send correct HTTP headers with Authorization scheme', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers) {
           expect(headers).to.deep.equal({
             Authorization: 'Bearer token',
@@ -218,7 +218,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "getAccounts" request body when there is no options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['getAccounts', {}, '#0']]);
 
@@ -232,7 +232,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "getAccounts" request body, forwarding options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['getAccounts', { sinceState: 'state' }, '#0']]);
 
@@ -246,7 +246,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise if the JMAP response is invalid', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q('Invalid JMAP response');
         }
@@ -258,7 +258,7 @@ describe('The Client class', function() {
     });
 
     it('should resolve the promise with an array of Account objects when the response is valid', function(done) {
-      var client = new jmap.Client({
+      var client = new jmapDraft.Client({
         post: function() {
           return q([['accounts', { list: [{ id: 'id' }, { id: 'id2' }] }, '#0']]);
         }
@@ -270,8 +270,8 @@ describe('The Client class', function() {
         .getAccounts()
         .then(function(data) {
           expect(data).to.deep.equal([
-            new jmap.Account(client, 'id', {}),
-            new jmap.Account(client, 'id2', {})
+            new jmapDraft.Account(client, 'id', {}),
+            new jmapDraft.Account(client, 'id2', {})
           ]);
 
           done();
@@ -292,18 +292,18 @@ describe('The Client class', function() {
         capabilities: {}
       };
 
-      var client = new jmap.Client({
+      var client = new jmapDraft.Client({
         post: function(url, headers) {
           return q.reject();
         }
-      }, new jmap.QPromiseProvider());
+      }, new jmapDraft.QPromiseProvider());
 
       client
         .withAuthAccess(authAccess)
         .getAccounts()
         .then(function(data) {
           expect(data).to.deep.equal([
-            new jmap.Account(client, 'a1', authAccess.accounts.a1)
+            new jmapDraft.Account(client, 'a1', authAccess.accounts.a1)
           ]);
 
           done();
@@ -316,7 +316,7 @@ describe('The Client class', function() {
   describe('The getMailboxes method', function() {
 
     it('should post on the API url', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url) {
           expect(url).to.equal('https://test');
 
@@ -330,7 +330,7 @@ describe('The Client class', function() {
     });
 
     it('should send correct HTTP headers, including Authorization=token', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers) {
           expect(headers).to.deep.equal({
             Authorization: 'token',
@@ -348,7 +348,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "getMailboxes" request body when there is no options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['getMailboxes', {}, '#0']]);
 
@@ -362,7 +362,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "getMailboxes" request body, forwarding options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['getMailboxes', { accountId: 'accountId' }, '#0']]);
 
@@ -376,7 +376,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise if the JMAP response is invalid', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q('Invalid JMAP response');
         }
@@ -388,7 +388,7 @@ describe('The Client class', function() {
     });
 
     it('should resolve the promise with an array of Mailbox objects when the response is valid', function(done) {
-      var client = new jmap.Client({
+      var client = new jmapDraft.Client({
         post: function() {
           return q([['mailboxes', { list: [{ id: 'id', name: 'name' }, { id: 'id2', name: 'name' }] }, '#0']]);
         }
@@ -400,8 +400,8 @@ describe('The Client class', function() {
         .getMailboxes()
         .then(function(data) {
           expect(data).to.deep.equal([
-            new jmap.Mailbox(client, 'id', 'name'),
-            new jmap.Mailbox(client, 'id2', 'name')
+            new jmapDraft.Mailbox(client, 'id', 'name'),
+            new jmapDraft.Mailbox(client, 'id2', 'name')
           ]);
 
           done();
@@ -413,7 +413,7 @@ describe('The Client class', function() {
   describe('The setMailboxes method', function() {
 
     it('should post on the API url', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url) {
           expect(url).to.equal('https://test');
 
@@ -427,7 +427,7 @@ describe('The Client class', function() {
     });
 
     it('should send correct HTTP headers, including Authorization=token', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers) {
           expect(headers).to.deep.equal({
             Authorization: 'token',
@@ -445,7 +445,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "setMailboxes" request body when there is no options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['setMailboxes', {}, '#0']]);
 
@@ -459,7 +459,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "setMailboxes" request body, forwarding options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['setMailboxes', {
             create: {
@@ -485,7 +485,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise if the JMAP response is invalid', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q('Invalid JMAP response');
         }
@@ -497,7 +497,7 @@ describe('The Client class', function() {
     });
 
     it('should resolve the promise with a Mailbox object when the response is valid', function(done) {
-      var client = new jmap.Client({
+      var client = new jmapDraft.Client({
         post: function() {
           return q([['mailboxesSet', {
             accountId: 'b6ed15b6-5611-11e5-b11b-0026b9fac7aa',
@@ -510,7 +510,7 @@ describe('The Client class', function() {
         .withAuthenticationToken('token')
         .setMailboxes()
         .then(function(data) {
-          expect(data).to.deep.equal(new jmap.SetResponse(client, { accountId: 'b6ed15b6-5611-11e5-b11b-0026b9fac7aa' }));
+          expect(data).to.deep.equal(new jmapDraft.SetResponse(client, { accountId: 'b6ed15b6-5611-11e5-b11b-0026b9fac7aa' }));
           done();
         });
     });
@@ -560,7 +560,7 @@ describe('The Client class', function() {
       client
         .createMailbox('name')
         .then(function(resolved) {
-          expect(resolved).to.be.an.instanceof(jmap.Mailbox);
+          expect(resolved).to.be.an.instanceof(jmapDraft.Mailbox);
           expect(resolved).to.include({
             id: 'id',
             name: 'another name'
@@ -588,7 +588,7 @@ describe('The Client class', function() {
       client
         .createMailbox('name')
         .then(function(resolved) {
-          expect(resolved).to.be.an.instanceof(jmap.Mailbox);
+          expect(resolved).to.be.an.instanceof(jmapDraft.Mailbox);
           expect(resolved).to.include({
             id: 'id',
             mustBeOnlyMailbox: true,
@@ -677,7 +677,7 @@ describe('The Client class', function() {
     });
 
     it('should send a JMAP "setMailboxes" request, passing correct options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['setMailboxes', {
             update: {
@@ -697,7 +697,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise if the mailbox was not updated', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q([['mailboxesSet', {
             accountId: 'b6ed15b6-5611-11e5-b11b-0026b9fac7aa',
@@ -717,7 +717,7 @@ describe('The Client class', function() {
     });
 
     it('should resolve the promise with nothing if the mailbox was updated', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q([['mailboxesSet', {
             accountId: 'b6ed15b6-5611-11e5-b11b-0026b9fac7aa',
@@ -852,7 +852,7 @@ describe('The Client class', function() {
   describe('The getMessageList method', function() {
 
     it('should post on the API url', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url) {
           expect(url).to.equal('https://test');
 
@@ -866,7 +866,7 @@ describe('The Client class', function() {
     });
 
     it('should send correct HTTP headers, including Authorization=token', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers) {
           expect(headers).to.deep.equal({
             Authorization: 'token',
@@ -884,7 +884,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "getMessageList" request body when there is no options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['getMessageList', {}, '#0']]);
 
@@ -898,7 +898,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "getMessageList" request body, forwarding options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['getMessageList', {
             filter: {
@@ -920,7 +920,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise if the JMAP response is invalid', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q('Invalid JMAP response');
         }
@@ -932,7 +932,7 @@ describe('The Client class', function() {
     });
 
     it('should resolve the promise with a MessageList object when the response is valid', function(done) {
-      var client = new jmap.Client({
+      var client = new jmapDraft.Client({
         post: function() {
           return q([['messageList', {
             accountId: 'user@example.com',
@@ -967,7 +967,7 @@ describe('The Client class', function() {
           collapseThreads: true
         })
         .then(function(data) {
-          expect(data).to.deep.equal(new jmap.MessageList(client, {
+          expect(data).to.deep.equal(new jmapDraft.MessageList(client, {
             accountId: 'user@example.com',
             filter: {
               inMailboxes: ['inbox']
@@ -992,7 +992,7 @@ describe('The Client class', function() {
     });
 
     it('should support implicit requests for getThreads and getMessages', function(done) {
-      var client = new jmap.Client({
+      var client = new jmapDraft.Client({
         post: function() {
           return q([
             ['messageList', {
@@ -1056,7 +1056,7 @@ describe('The Client class', function() {
         })
         .then(function(data) {
           expect(data).to.deep.equal([
-            new jmap.MessageList(client, {
+            new jmapDraft.MessageList(client, {
               messageIds: [
                 'fm1u314',
                 'fm1u312'
@@ -1067,13 +1067,13 @@ describe('The Client class', function() {
               ]
             }),
             [
-              new jmap.Thread(client, '4f512aafed75e7fb', { messageIds: ['fm1u314'] }),
-              new jmap.Thread(client, 'fed75e7fb4f512aa', { messageIds: ['fm1u312', 'fm2u12'] })
+              new jmapDraft.Thread(client, '4f512aafed75e7fb', { messageIds: ['fm1u314'] }),
+              new jmapDraft.Thread(client, 'fed75e7fb4f512aa', { messageIds: ['fm1u312', 'fm2u12'] })
             ],
             [
-              new jmap.Message(client, 'fm1u314', '4f512aafed75e7fb', '4f512aafed75e7fb', ['inbox']),
-              new jmap.Message(client, 'fm1u312', 'fed75e7fb4f512aa', 'fed75e7fb4f512aa', ['inbox']),
-              new jmap.Message(client, 'fm2u12', 'fed75e7fb4f512aa', 'fed75e7fb4f512aa', ['mailbox2'])
+              new jmapDraft.Message(client, 'fm1u314', '4f512aafed75e7fb', '4f512aafed75e7fb', ['inbox']),
+              new jmapDraft.Message(client, 'fm1u312', 'fed75e7fb4f512aa', 'fed75e7fb4f512aa', ['inbox']),
+              new jmapDraft.Message(client, 'fm2u12', 'fed75e7fb4f512aa', 'fed75e7fb4f512aa', ['mailbox2'])
             ]
           ]);
 
@@ -1086,7 +1086,7 @@ describe('The Client class', function() {
   describe('The getThreads method', function() {
 
     it('should post on the API url', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url) {
           expect(url).to.equal('https://test');
 
@@ -1100,7 +1100,7 @@ describe('The Client class', function() {
     });
 
     it('should send correct HTTP headers, including Authorization=token', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers) {
           expect(headers).to.deep.equal({
             Authorization: 'token',
@@ -1118,7 +1118,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "getThreads" request body when there is no options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['getThreads', {}, '#0']]);
 
@@ -1132,7 +1132,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "getThreads" request body, forwarding options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['getThreads', { ids: ['id1', 'id2'] }, '#0']]);
 
@@ -1146,7 +1146,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise if the JMAP response is invalid', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q('Invalid JMAP response');
         }
@@ -1158,7 +1158,7 @@ describe('The Client class', function() {
     });
 
     it('should resolve the promise with an array of Thread objects when the response is valid', function(done) {
-      var client = new jmap.Client({
+      var client = new jmapDraft.Client({
         post: function() {
           return q([['threads', {
             accountId: 'user@example.com',
@@ -1180,8 +1180,8 @@ describe('The Client class', function() {
         .getThreads({ ids: ['4f512aafed75e7fb', 'fed75e7fb4f512aa'] })
         .then(function(data) {
           expect(data).to.deep.equal([
-            new jmap.Thread(client, '4f512aafed75e7fb', { messageIds: ['fm1u314'] }),
-            new jmap.Thread(client, 'fed75e7fb4f512aa', { messageIds: ['fm1u312', 'fm2u12', 'fm1u304'] })
+            new jmapDraft.Thread(client, '4f512aafed75e7fb', { messageIds: ['fm1u314'] }),
+            new jmapDraft.Thread(client, 'fed75e7fb4f512aa', { messageIds: ['fm1u312', 'fm2u12', 'fm1u304'] })
           ]);
 
           done();
@@ -1189,7 +1189,7 @@ describe('The Client class', function() {
     });
 
     it('should support implicit requests for getMessages', function(done) {
-      var client = new jmap.Client({
+      var client = new jmapDraft.Client({
         post: function() {
           return q([
             ['threads', {
@@ -1223,8 +1223,8 @@ describe('The Client class', function() {
         })
         .then(function(data) {
           expect(data).to.deep.equal([
-            [new jmap.Thread(client, '4f512aafed75e7fb', { messageIds: ['fm1u314'] })],
-            [new jmap.Message(client, 'fm1u314', '4f512aafed75e7fb', '4f512aafed75e7fb', ['inbox'])]
+            [new jmapDraft.Thread(client, '4f512aafed75e7fb', { messageIds: ['fm1u314'] })],
+            [new jmapDraft.Message(client, 'fm1u314', '4f512aafed75e7fb', '4f512aafed75e7fb', ['inbox'])]
           ]);
 
           done();
@@ -1236,7 +1236,7 @@ describe('The Client class', function() {
   describe('The getMessages method', function() {
 
     it('should post on the API url', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url) {
           expect(url).to.equal('https://test');
 
@@ -1250,7 +1250,7 @@ describe('The Client class', function() {
     });
 
     it('should send correct HTTP headers, including Authorization=token', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers) {
           expect(headers).to.deep.equal({
             Authorization: 'token',
@@ -1268,7 +1268,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "getMessages" request body when there is no options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['getMessages', {}, '#0']]);
 
@@ -1282,7 +1282,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "getMessages" request body, forwarding options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['getMessages', { ids: ['id1', 'id2'] }, '#0']]);
 
@@ -1296,7 +1296,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise if the JMAP response is invalid', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q('Invalid JMAP response');
         }
@@ -1308,7 +1308,7 @@ describe('The Client class', function() {
     });
 
     it('should resolve the promise with an array of Message objects when the response is valid', function(done) {
-      var client = new jmap.Client({
+      var client = new jmapDraft.Client({
         post: function() {
           return q([['messages', {
             accountId: 'user@example.com',
@@ -1335,8 +1335,8 @@ describe('The Client class', function() {
         .getMessages({ ids: ['fm1u312', 'fm2u12'] })
         .then(function(data) {
           expect(data).to.deep.equal([
-            new jmap.Message(client, 'fm1u312', 'fed75e7fb4f512aa', 'fed75e7fb4f512aa', ['mailbox1']),
-            new jmap.Message(client, 'fm2u12', 'fed75e7fb4f512aa', 'fed75e7fb4f512aa', ['mailbox2'])
+            new jmapDraft.Message(client, 'fm1u312', 'fed75e7fb4f512aa', 'fed75e7fb4f512aa', ['mailbox1']),
+            new jmapDraft.Message(client, 'fm2u12', 'fed75e7fb4f512aa', 'fed75e7fb4f512aa', ['mailbox2'])
           ]);
 
           done();
@@ -1344,7 +1344,7 @@ describe('The Client class', function() {
     });
 
     it('should filter messages with no mailboxIds from the response', function(done) {
-      var client = new jmap.Client({
+      var client = new jmapDraft.Client({
         post: function() {
           return q([['messages', {
             accountId: 'user@example.com',
@@ -1380,8 +1380,8 @@ describe('The Client class', function() {
         .getMessages({ ids: ['fm1u312', 'fm2u12'] })
         .then(function(data) {
           expect(data).to.deep.equal([
-            new jmap.Message(client, 'fm1u312', 'fed75e7fb4f512aa', 'fed75e7fb4f512aa', ['mailbox1']),
-            new jmap.Message(client, 'fm2u12', 'fed75e7fb4f512aa', 'fed75e7fb4f512aa', ['mailbox2'])
+            new jmapDraft.Message(client, 'fm1u312', 'fed75e7fb4f512aa', 'fed75e7fb4f512aa', ['mailbox1']),
+            new jmapDraft.Message(client, 'fm2u12', 'fed75e7fb4f512aa', 'fed75e7fb4f512aa', ['mailbox2'])
           ]);
 
           done();
@@ -1393,7 +1393,7 @@ describe('The Client class', function() {
   describe('The setMessages method', function() {
 
     it('should post on the API url', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url) {
           expect(url).to.equal('https://test');
 
@@ -1407,7 +1407,7 @@ describe('The Client class', function() {
     });
 
     it('should send correct HTTP headers, including Authorization=token', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers) {
           expect(headers).to.deep.equal({
             Authorization: 'token',
@@ -1425,7 +1425,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "setMessages" request body when there is no options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['setMessages', {}, '#0']]);
 
@@ -1439,7 +1439,7 @@ describe('The Client class', function() {
     });
 
     it('should send a valid JMAP "setMessages" request body, forwarding options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['setMessages', {
             update: {
@@ -1465,7 +1465,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise if the JMAP response is invalid', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q('Invalid JMAP response');
         }
@@ -1477,7 +1477,7 @@ describe('The Client class', function() {
     });
 
     it('should resolve the promise with a SetResponse object when the response is valid', function(done) {
-      var client = new jmap.Client({
+      var client = new jmapDraft.Client({
         post: function() {
           return q([['messagesSet', {
             accountId: 'b6ed15b6-5611-11e5-b11b-0026b9fac7aa',
@@ -1497,7 +1497,7 @@ describe('The Client class', function() {
           }
         })
         .then(function(data) {
-          expect(data).to.deep.equal(new jmap.SetResponse(client, {
+          expect(data).to.deep.equal(new jmapDraft.SetResponse(client, {
             accountId: 'b6ed15b6-5611-11e5-b11b-0026b9fac7aa',
             updated: ['abcd']
           }));
@@ -1529,7 +1529,7 @@ describe('The Client class', function() {
     });
 
     it('should send a JMAP "setMessages" request, passing correct options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['setMessages', {
             update: {
@@ -1549,7 +1549,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise leveraging the returned error message if the message was not updated', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q([['messagesSet', {
             accountId: 'b6ed15b6-5611-11e5-b11b-0026b9fac7aa',
@@ -1573,7 +1573,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise leveraging the default error message if the message was not updated', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q([['messagesSet', {
             accountId: 'b6ed15b6-5611-11e5-b11b-0026b9fac7aa',
@@ -1592,7 +1592,7 @@ describe('The Client class', function() {
     });
 
     it('should resolve the promise with nothing is the message was updated', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q([['messagesSet', {
             accountId: 'b6ed15b6-5611-11e5-b11b-0026b9fac7aa',
@@ -1634,7 +1634,7 @@ describe('The Client class', function() {
     });
 
     it('should send a JMAP "setMessages" request, passing correct options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['setMessages', {
             update: {
@@ -1654,7 +1654,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise if the message was not moved', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q([['messagesSet', {
             accountId: 'b6ed15b6-5611-11e5-b11b-0026b9fac7aa',
@@ -1674,7 +1674,7 @@ describe('The Client class', function() {
     });
 
     it('should resolve the promise with nothing is the message was moved', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q([['messagesSet', {
             accountId: 'b6ed15b6-5611-11e5-b11b-0026b9fac7aa',
@@ -1706,12 +1706,12 @@ describe('The Client class', function() {
 
     it('should throw an Error if role is UNKNOWN', function() {
       expect(function() {
-        defaultClient().getMailboxWithRole(jmap.MailboxRole.UNKNOWN);
+        defaultClient().getMailboxWithRole(jmapDraft.MailboxRole.UNKNOWN);
       }).to.throw(Error);
     });
 
     it('should send a JMAP "getMailboxes" request, passing options', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, body) {
           expect(body).to.deep.equal([['getMailboxes', { a: 'b' }, '#0']]);
 
@@ -1725,7 +1725,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise if no mailboxes are returned', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q([['mailboxes', {
             list: []
@@ -1739,7 +1739,7 @@ describe('The Client class', function() {
     });
 
     it('should reject the promise if the mailbox is not found', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q([['mailboxes', {
             list: [{
@@ -1761,7 +1761,7 @@ describe('The Client class', function() {
     });
 
     it('should resolve the promise with the mailbox if found', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function() {
           return q([['mailboxes', {
             list: [{
@@ -1784,7 +1784,7 @@ describe('The Client class', function() {
         .withAuthenticationToken('token')
         .getMailboxWithRole('outbox')
         .then(function(mailbox) {
-          expect(mailbox.role).to.equal(jmap.MailboxRole.OUTBOX);
+          expect(mailbox.role).to.equal(jmapDraft.MailboxRole.OUTBOX);
 
           done();
         });
@@ -1800,7 +1800,7 @@ describe('The Client class', function() {
 
   describe('The authenticate method', function() {
     it('should send a request to the authenticationUrl with the right body', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
           expect(url).to.equal('https://test');
           expect(data.username).to.equal('user@domain.com');
@@ -1817,7 +1817,7 @@ describe('The Client class', function() {
     });
 
     it('should call the provided continuation calback', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
 
           return q({
@@ -1839,7 +1839,7 @@ describe('The Client class', function() {
     it('should request the accessToken with the selected method', function(done) {
       var calls =  0;
 
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
           if (calls === 0) {
             calls++;
@@ -1868,7 +1868,7 @@ describe('The Client class', function() {
     });
 
     it('should reject if an unsupported auth method is requested', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
           return q({
             loginId: 'loginId1',
@@ -1887,7 +1887,7 @@ describe('The Client class', function() {
     });
 
     it('should resolve with AuthAccess', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
           if (data.username) {
             return q({
@@ -1911,7 +1911,7 @@ describe('The Client class', function() {
     });
 
     it('should repeat authentication steps if server demands to', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
           if (data.username) {
             return q({
@@ -1953,7 +1953,7 @@ describe('The Client class', function() {
     });
 
     it('should reject on ambiguous server response', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
           return q({
             accessToken: 'accessToken1',
@@ -1972,7 +1972,7 @@ describe('The Client class', function() {
     });
 
     it('should reject on invalid server responses', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
           if (data.username) {
             return q({
@@ -2001,7 +2001,7 @@ describe('The Client class', function() {
   describe('The authExternal method', function() {
 
     it('should reject if the server does not support external authentication', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
           return q({
             loginId: 'loginId1',
@@ -2018,7 +2018,7 @@ describe('The Client class', function() {
     });
 
     it('should call the provided continuation calback', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
           return q({
             loginId: 'loginId1',
@@ -2037,7 +2037,7 @@ describe('The Client class', function() {
     });
 
     it('should give back a AuthAccess', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
           if (data.username) {
             return q({
@@ -2063,10 +2063,10 @@ describe('The Client class', function() {
   });
 
   describe('The authPassword method', function() {
-    var promiseProvider = new jmap.QPromiseProvider();
+    var promiseProvider = new jmapDraft.QPromiseProvider();
 
     it('should reject if the server does not support password authentication', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
           return q({
             loginId: 'loginId1',
@@ -2083,7 +2083,7 @@ describe('The Client class', function() {
     });
 
     it('should give back a AuthAccess', function(done) {
-      new jmap.Client({
+      new jmapDraft.Client({
         post: function(url, headers, data) {
           if (data.username) {
             return q({
@@ -2124,7 +2124,7 @@ describe('The Client class', function() {
       var client = defaultClient();
 
       client.getMailboxWithRole = function(role) {
-        expect(role).to.deep.equal(jmap.MailboxRole.DRAFTS);
+        expect(role).to.deep.equal(jmapDraft.MailboxRole.DRAFTS);
 
         done();
 
@@ -2134,7 +2134,7 @@ describe('The Client class', function() {
       client
         .withAPIUrl('https://test')
         .withAuthenticationToken('token')
-        .saveAsDraft(new jmap.OutboundMessage(jmap));
+        .saveAsDraft(new jmapDraft.OutboundMessage(jmapDraft));
     });
 
     function saveAsDraftReadyClient() {
@@ -2146,7 +2146,7 @@ describe('The Client class', function() {
         return 'expectedClientId';
       };
       client.getMailboxWithRole = function() {
-        return q.resolve(new jmap.Mailbox({}, 5, 'my drafts', { role: jmap.MailboxRole.DRAFTS }));
+        return q.resolve(new jmapDraft.Mailbox({}, 5, 'my drafts', { role: jmapDraft.MailboxRole.DRAFTS }));
       };
 
       return client;
@@ -2169,7 +2169,7 @@ describe('The Client class', function() {
         return q.reject();
       };
 
-      client.saveAsDraft(new jmap.OutboundMessage(jmap, {
+      client.saveAsDraft(new jmapDraft.OutboundMessage(jmapDraft, {
           subject: 'message topic'
         }))
         .then(null, done);
@@ -2192,7 +2192,7 @@ describe('The Client class', function() {
         return q.reject();
       };
 
-      client.saveAsDraft(new jmap.OutboundMessage(jmap, {
+      client.saveAsDraft(new jmapDraft.OutboundMessage(jmapDraft, {
           subject: 'message topic',
           isDraft: false
         }))
@@ -2216,11 +2216,11 @@ describe('The Client class', function() {
       };
 
       client
-        .saveAsDraft(new jmap.OutboundMessage(jmap, {
+        .saveAsDraft(new jmapDraft.OutboundMessage(jmapDraft, {
           subject: 'message topic'
         }))
         .then(function(resolved) {
-          expect(resolved).to.be.an.instanceof(jmap.CreateMessageAck);
+          expect(resolved).to.be.an.instanceof(jmapDraft.CreateMessageAck);
           expect(resolved).to.include({
             blobId: 'm-ma294202da',
             id: 'ma294202da',
@@ -2245,7 +2245,7 @@ describe('The Client class', function() {
       };
 
       client
-        .saveAsDraft(new jmap.OutboundMessage(jmap, {
+        .saveAsDraft(new jmapDraft.OutboundMessage(jmapDraft, {
           subject: 'message topic'
         }))
         .then(null, function(err) {
@@ -2269,7 +2269,7 @@ describe('The Client class', function() {
       };
 
       client
-        .saveAsDraft(new jmap.OutboundMessage(jmap, {
+        .saveAsDraft(new jmapDraft.OutboundMessage(jmapDraft, {
           subject: 'message topic'
         }))
         .then(null, function(err) {
@@ -2294,7 +2294,7 @@ describe('The Client class', function() {
       };
 
       client
-        .saveAsDraft(new jmap.OutboundMessage(jmap, {
+        .saveAsDraft(new jmapDraft.OutboundMessage(jmapDraft, {
           subject: 'message topic'
         }))
         .then(null, function(err) {
@@ -2431,7 +2431,7 @@ describe('The Client class', function() {
       };
 
       client.destroyMessages(['id']).then(function(response) {
-        expect(response).to.be.an.instanceof(jmap.SetResponse);
+        expect(response).to.be.an.instanceof(jmapDraft.SetResponse);
 
         done();
       });
@@ -2463,14 +2463,14 @@ describe('The Client class', function() {
       var client = defaultClient();
 
       client.getMailboxWithRole = function(role) {
-        expect(role).to.deep.equal(jmap.MailboxRole.OUTBOX);
+        expect(role).to.deep.equal(jmapDraft.MailboxRole.OUTBOX);
 
         done();
 
         return q.reject();
       };
 
-      client.send(new jmap.OutboundMessage(jmap));
+      client.send(new jmapDraft.OutboundMessage(jmapDraft));
     });
 
     function sendReadyClient() {
@@ -2482,7 +2482,7 @@ describe('The Client class', function() {
         return 'expectedClientId';
       };
       client.getMailboxWithRole = function() {
-        return q.resolve(new jmap.Mailbox(client, 2, 'outbox', { role: jmap.MailboxRole.OUTBOX }));
+        return q.resolve(new jmapDraft.Mailbox(client, 2, 'outbox', { role: jmapDraft.MailboxRole.OUTBOX }));
       };
 
       return client;
@@ -2505,7 +2505,7 @@ describe('The Client class', function() {
         }, '#0']]);
       };
 
-      client.send(new jmap.OutboundMessage(jmap), new jmap.Mailbox(jmap, 'outbox', 'outbox', { role: 'outbox' })).then(function(a) {
+      client.send(new jmapDraft.OutboundMessage(jmapDraft), new jmapDraft.Mailbox(jmapDraft, 'outbox', 'outbox', { role: 'outbox' })).then(function(a) {
         expect(client.getMailboxWithRole).to.have.not.been.calledWith();
 
         done();
@@ -2528,7 +2528,7 @@ describe('The Client class', function() {
         return q.reject();
       };
 
-      client.send(new jmap.OutboundMessage(client, {
+      client.send(new jmapDraft.OutboundMessage(client, {
         subject: 'message topic',
         isDraft: true
       })).then(null, done);
@@ -2551,10 +2551,10 @@ describe('The Client class', function() {
       };
 
       client
-        .send(new jmap.OutboundMessage(jmap, {
+        .send(new jmapDraft.OutboundMessage(jmapDraft, {
           subject: 'message topic'
         })).then(function(ack) {
-          expect(ack).to.be.an.instanceof(jmap.CreateMessageAck);
+          expect(ack).to.be.an.instanceof(jmapDraft.CreateMessageAck);
           expect(ack).to.include({
             blobId: 'm-ma294202da',
             id: 'ma294202da',
@@ -2580,7 +2580,7 @@ describe('The Client class', function() {
       };
 
       client
-        .send(new jmap.OutboundMessage(jmap, {
+        .send(new jmapDraft.OutboundMessage(jmapDraft, {
           subject: 'message topic'
         })).then(null, function() {
           done();
@@ -2602,7 +2602,7 @@ describe('The Client class', function() {
       };
 
       client
-        .send(new jmap.OutboundMessage(jmap, {
+        .send(new jmapDraft.OutboundMessage(jmapDraft, {
           subject: 'message topic'
         })).then(null, function(err) {
           expect(err.message).to.equal('Failed to store message with clientId expectedClientId. Error: none');
@@ -2626,7 +2626,7 @@ describe('The Client class', function() {
       };
 
       client
-        .send(new jmap.OutboundMessage(jmap, {
+        .send(new jmapDraft.OutboundMessage(jmapDraft, {
           subject: 'message topic'
         })).then(null, function(err) {
           expect(err.message).to.equal('Failed to store message with clientId expectedClientId. Error: JmapError{type=invalidArguments,description=null,method=null}');
@@ -2670,7 +2670,7 @@ describe('The Client class', function() {
       };
 
       client.getVacationResponse().then(function(response) {
-        expect(response).to.be.an.instanceof(jmap.VacationResponse);
+        expect(response).to.be.an.instanceof(jmapDraft.VacationResponse);
         expect(response).to.shallowDeepEqual({
           id: 'singleton',
           isEnabled: true,
@@ -2699,7 +2699,7 @@ describe('The Client class', function() {
 
   describe('The setVacationResponse method', function() {
 
-    var vacation = new jmap.VacationResponse({}, {
+    var vacation = new jmapDraft.VacationResponse({}, {
       isEnabled: true,
       fromDate: '2016-06-10T12:00:00Z',
       textBody: 'Text'
@@ -2818,8 +2818,8 @@ describe('The Client class', function() {
         return q([['error', { type: 'invalidArguments', description: 'The `id` property must be `singleton`.' }, '#0']]);
       };
 
-      client.setVacationResponse(new jmap.VacationResponse({ id: 'newId' })).then(null, function(err) {
-        expect(err).to.be.an.instanceof(jmap.JmapError);
+      client.setVacationResponse(new jmapDraft.VacationResponse({ id: 'newId' })).then(null, function(err) {
+        expect(err).to.be.an.instanceof(jmapDraft.JmapError);
         expect(err.type).to.equal('invalidArguments');
         expect(err.description).to.equal('The `id` property must be `singleton`.');
         expect(err.method).to.equal('setVacationResponse');

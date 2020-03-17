@@ -1,6 +1,6 @@
-# JMAP-CLIENT
+# JMAP-DRAFT-CLIENT
 
-[![Join the chat at https://gitter.im/linagora/jmap-client](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/linagora/jmap-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/linagora/jmap-client.svg?branch=master)](https://travis-ci.org/linagora/jmap-client) [![Coverage Status](https://coveralls.io/repos/linagora/jmap-client/badge.svg?branch=master&service=github)](https://coveralls.io/github/linagora/jmap-client?branch=master)
+[![Join the chat at https://gitter.im/linagora/jmap-client](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/linagora/jmap-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/linagora/jmap-draft-client.svg?branch=master)](https://travis-ci.org/linagora/jmap-draft-client) [![Coverage Status](https://coveralls.io/repos/linagora/jmap-draft-client/badge.svg?branch=master&service=github)](https://coveralls.io/github/linagora/jmap-draft-client?branch=master)
 
 This repository provides a JavaScript library to make requests against a JMAP server.
 It is a client-side implementation of the [JMAP](http://jmap.io/spec.html) specification.
@@ -18,11 +18,11 @@ Non-exhaustive list of features:
 
 The library is provided as a NPM or Bower packages, thus to install either use:
 
-    npm install jmap-client
+    npm install jmap-draft-client
 
 or
 
-    bower install jmap-client
+    bower install jmap-draft-client
 
 depending on your preferred package manager.
 
@@ -30,7 +30,7 @@ depending on your preferred package manager.
 
 The library is very easy to use, all you need to do is create an instance of the *Client* class, then use its fluent API to send some JMAP requests:
 
-    new jmap.Client(<your Transport>, <your PromiseProvider>)
+    new jmapDraft.Client(<your Transport>, <your PromiseProvider>)
         .withAPIUrl('https://jmap.my.server.com')
         .withAuthenticationToken('YourAuthenticationToken')
         .getMailboxes()
@@ -40,15 +40,15 @@ The library is very easy to use, all you need to do is create an instance of the
             // An error occured
         });
 
-Once you're familiar with the library, head on to the [API documentation](http://linagora.github.io/jmap-client/doc/api/) to find out what's possible...  
+Once you're familiar with the library, head on to the [API documentation](http://linagora.github.io/jmap-draft-client/doc/api/) to find out what's possible...  
 There's also some code samples included in the *samples* folder.
 
 ## How to contribute
 
 ### 1. Clone the repository
 
-    git clone https://ci.open-paas.org/stash/scm/olibs/jmap-client.git
-    cd jmap-client
+    git clone https://ci.open-paas.org/stash/scm/olibs/jmap-draft-client.git
+    cd jmap-draft-client
 
 ### 2. Install dependencies
 

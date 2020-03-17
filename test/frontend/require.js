@@ -1,10 +1,10 @@
 'use strict';
 
-/* global jmap: false, chai: false, Q: false, sinon: false */
+/* global jmapDraft: false, chai: false, Q: false, sinon: false */
 
 window.require = function(name) {
-  if (/jmap-client/.test(name)) {
-    return jmap;
+  if (/jmap-draft-client/.test(name)) {
+    return jmapDraft;
   }
 
   if (name === 'chai') {

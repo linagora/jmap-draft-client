@@ -1,11 +1,11 @@
 {
-  "name": "jmap-client",
+  "name": "jmap-draft-client",
   "version": "0.1.1-dev",
   "authors": [
     "Linagora Folks <lgs-openpaas-dev@linagora.com>"
   ],
   "description": "A Javascript library to connect to a JMAP mail server",
-  "main": "dist/jmap-client.min.js",
+  "main": "dist/jmap-draft-client.min.js",
   "moduleType": [
     "globals",
     "node"

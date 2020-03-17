@@ -1,11 +1,11 @@
 'use strict';
 
-/* global chai: false, jmap: false, jQuery: false */
+/* global chai: false, jmapDraft: false, jQuery: false */
 
 var expect = chai.expect;
 
 function newTransport() {
-  return new jmap.JQueryTransport(new jmap.QPromiseProvider());
+  return new jmapDraft.JQueryTransport(new jmapDraft.QPromiseProvider());
 }
 
 describe('The JQueryTransport class', function() {
@@ -19,7 +19,7 @@ describe('The JQueryTransport class', function() {
   });
 
   function expectTransportError(err, cause, statusCode, responseText) {
-    expect(err).to.be.a.instanceof(jmap.TransportError);
+    expect(err).to.be.a.instanceof(jmapDraft.TransportError);
     expect(err.cause).to.equal(cause);
     expect(err.statusCode).to.equal(statusCode);
     expect(err.responseText).to.equal(responseText);

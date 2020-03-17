@@ -1,7 +1,7 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client');
+    jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The JSONBuilder class', function() {
 
@@ -9,33 +9,33 @@ describe('The JSONBuilder class', function() {
 
     it('should throw an Error if the name is undefined', function() {
       expect(function() {
-        new jmap.JSONBuilder().append(undefined, { val: 'yolo' });
+        new jmapDraft.JSONBuilder().append(undefined, { val: 'yolo' });
       }).to.throw(Error);
     });
 
     it('should throw an Error if the value is undefined', function() {
       expect(function() {
-        new jmap.JSONBuilder().append('name', undefined);
+        new jmapDraft.JSONBuilder().append('name', undefined);
       }).to.throw(Error);
     });
 
     it('should append object value', function() {
-      expect(new jmap.JSONBuilder().append('name', { val: 'yolo' }).build())
+      expect(new jmapDraft.JSONBuilder().append('name', { val: 'yolo' }).build())
         .to.deep.equal({ name: { val: 'yolo' } });
     });
 
     it('should append number value', function() {
-      expect(new jmap.JSONBuilder().append('name', 5).build())
+      expect(new jmapDraft.JSONBuilder().append('name', 5).build())
         .to.deep.equal({ name: 5 });
     });
 
     it('should append string value', function() {
-      expect(new jmap.JSONBuilder().append('name', 'yolo').build())
+      expect(new jmapDraft.JSONBuilder().append('name', 'yolo').build())
         .to.deep.equal({ name: 'yolo' });
     });
 
     it('should append false value', function() {
-      expect(new jmap.JSONBuilder().append('name', false).build())
+      expect(new jmapDraft.JSONBuilder().append('name', false).build())
         .to.deep.equal({ name: false });
     });
 
@@ -45,27 +45,27 @@ describe('The JSONBuilder class', function() {
 
     it('should throw an Error if the name is undefined', function() {
       expect(function() {
-        new jmap.JSONBuilder().appendIfDefined(undefined, { val: 'yolo' });
+        new jmapDraft.JSONBuilder().appendIfDefined(undefined, { val: 'yolo' });
       }).to.throw(Error);
     });
 
     it('should append nothing if the value is undefined', function() {
-      expect(new jmap.JSONBuilder().appendIfDefined('name', undefined).build())
+      expect(new jmapDraft.JSONBuilder().appendIfDefined('name', undefined).build())
         .to.deep.equal({});
     });
 
     it('should append if the value is defined', function() {
-      expect(new jmap.JSONBuilder().appendIfDefined('name', 'yolo').build())
+      expect(new jmapDraft.JSONBuilder().appendIfDefined('name', 'yolo').build())
         .to.deep.equal({ name: 'yolo' });
     });
 
     it('should append if the value is zero', function() {
-      expect(new jmap.JSONBuilder().appendIfDefined('name', 0).build())
+      expect(new jmapDraft.JSONBuilder().appendIfDefined('name', 0).build())
         .to.deep.equal({ name: 0 });
     });
 
     it('should append if the value is empty string', function() {
-      expect(new jmap.JSONBuilder().appendIfDefined('name', '').build())
+      expect(new jmapDraft.JSONBuilder().appendIfDefined('name', '').build())
         .to.deep.equal({ name: '' });
     });
 
@@ -83,38 +83,38 @@ describe('The JSONBuilder class', function() {
 
     it('should throw an Error if the name is undefined', function() {
       expect(function() {
-        new jmap.JSONBuilder().appendIfNotEmpty(undefined, [1, 2]);
+        new jmapDraft.JSONBuilder().appendIfNotEmpty(undefined, [1, 2]);
       }).to.throw(Error);
     });
 
     it('should throw an Error if the value is not an array', function() {
       expect(function() {
-        new jmap.JSONBuilder().appendIfNotEmpty(undefined, {});
+        new jmapDraft.JSONBuilder().appendIfNotEmpty(undefined, {});
       }).to.throw(Error);
     });
 
     it('should append nothing if the value is undefined', function() {
-      expect(new jmap.JSONBuilder().appendIfNotEmpty('name', undefined).build())
+      expect(new jmapDraft.JSONBuilder().appendIfNotEmpty('name', undefined).build())
         .to.deep.equal({});
     });
 
     it('should append nothing if the value is empty', function() {
-      expect(new jmap.JSONBuilder().appendIfNotEmpty('name', []).build())
+      expect(new jmapDraft.JSONBuilder().appendIfNotEmpty('name', []).build())
         .to.deep.equal({});
     });
 
     it('should append if the value is not empty', function() {
-      expect(new jmap.JSONBuilder().appendIfNotEmpty('name', [1, 'bla']).build())
+      expect(new jmapDraft.JSONBuilder().appendIfNotEmpty('name', [1, 'bla']).build())
         .to.deep.equal({ name: [1, 'bla'] });
     });
 
     it('should append with transformation if the value is an object with toJSONObject method', function() {
-      expect(new jmap.JSONBuilder().appendIfNotEmpty('name', [new TestType()]).build())
+      expect(new jmapDraft.JSONBuilder().appendIfNotEmpty('name', [new TestType()]).build())
         .to.deep.equal({ name: ['lo'] });
     });
 
     it('should transform only if the value is an object with toJSONObject method', function() {
-      expect(new jmap.JSONBuilder().appendIfNotEmpty('name', [1, new TestType(), 'bla']).build())
+      expect(new jmapDraft.JSONBuilder().appendIfNotEmpty('name', [1, new TestType(), 'bla']).build())
         .to.deep.equal({ name: [1, 'lo', 'bla'] });
     });
   });
@@ -125,22 +125,22 @@ describe('The JSONBuilder class', function() {
 
     it('should throw an Error if the name is undefined', function() {
       expect(function() {
-        new jmap.JSONBuilder().appendDateIfDefined(undefined, new Date());
+        new jmapDraft.JSONBuilder().appendDateIfDefined(undefined, new Date());
       }).to.throw(Error);
     });
 
     it('should throw an Error if date is not a Date', function() {
       expect(function() {
-        new jmap.JSONBuilder().appendDateIfDefined(undefined, {});
+        new jmapDraft.JSONBuilder().appendDateIfDefined(undefined, {});
       }).to.throw(Error);
     });
 
     it('should append nothing if the date is undefined', function() {
-      expect(new jmap.JSONBuilder().appendDateIfDefined('date').build()).to.deep.equal({});
+      expect(new jmapDraft.JSONBuilder().appendDateIfDefined('date').build()).to.deep.equal({});
     });
 
     it('should append an ISO Date String if the value is a Date', function() {
-      expect(new jmap.JSONBuilder().appendDateIfDefined('date', date).build()).to.deep.equal({ date: '2016-06-10T17:00:00Z' });
+      expect(new jmapDraft.JSONBuilder().appendDateIfDefined('date', date).build()).to.deep.equal({ date: '2016-06-10T17:00:00Z' });
     });
 
   });
@@ -158,22 +158,22 @@ describe('The JSONBuilder class', function() {
 
     it('should throw an Error if the name is undefined', function() {
       expect(function() {
-        new jmap.JSONBuilder().appendObject(undefined, {});
+        new jmapDraft.JSONBuilder().appendObject(undefined, {});
       }).to.throw(Error);
     });
 
     it('should throw an Error if date is not an Object', function() {
       expect(function() {
-        new jmap.JSONBuilder().appendObject('obj', []);
+        new jmapDraft.JSONBuilder().appendObject('obj', []);
       }).to.throw(Error);
     });
 
     it('should append a clone of the object value', function() {
-      expect(new jmap.JSONBuilder().appendObject('obj', obj).build()).to.deep.equal({ obj: obj });
+      expect(new jmapDraft.JSONBuilder().appendObject('obj', obj).build()).to.deep.equal({ obj: obj });
     });
 
     it('should call toJSONObject() on object elements', function() {
-      expect(new jmap.JSONBuilder().appendObject('obj', complex).build()).to.deep.equal({ obj: { foo: 'foo', child: { value: 'bar' } } });
+      expect(new jmapDraft.JSONBuilder().appendObject('obj', complex).build()).to.deep.equal({ obj: { foo: 'foo', child: { value: 'bar' } } });
     });
 
   });

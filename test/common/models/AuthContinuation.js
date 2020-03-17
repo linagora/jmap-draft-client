@@ -1,13 +1,13 @@
 'use strict';
 
 var expect = require('chai').expect,
-    jmap = require('../../../dist/jmap-client');
+    jmapDraft = require('../../../dist/jmap-draft-client');
 
 describe('The AuthContinuation class', function() {
   describe('constructor', function() {
     it('should throw if payload parameter is not defined', function() {
       expect(function() {
-        new jmap.AuthContinuation();
+        new jmapDraft.AuthContinuation();
       }).to.throw(Error);
     });
 
@@ -15,7 +15,7 @@ describe('The AuthContinuation class', function() {
       expect(function() {
         var payload = { methods: [] };
 
-        new jmap.AuthContinuation(payload);
+        new jmapDraft.AuthContinuation(payload);
       }).to.throw(Error);
     });
 
@@ -23,7 +23,7 @@ describe('The AuthContinuation class', function() {
       expect(function() {
         var payload = { loginId: 'loginId1' };
 
-        new jmap.AuthContinuation(payload);
+        new jmapDraft.AuthContinuation(payload);
       }).to.throw(Error);
     });
 
@@ -31,7 +31,7 @@ describe('The AuthContinuation class', function() {
       expect(function() {
         var payload = { loginId: 'loginId1', methods: 'password' };
 
-        new jmap.AuthContinuation(payload);
+        new jmapDraft.AuthContinuation(payload);
       }).to.throw(Error);
     });
 
@@ -39,7 +39,7 @@ describe('The AuthContinuation class', function() {
       expect(function() {
         var payload = { loginId: 'loginId1', methods: ['oauth', 'password'] };
 
-        new jmap.AuthContinuation(payload);
+        new jmapDraft.AuthContinuation(payload);
       }).to.throw(Error);
     });
 
@@ -51,7 +51,7 @@ describe('The AuthContinuation class', function() {
           { type: 'external' }
         ]
       };
-      var authContinuation = new jmap.AuthContinuation(payload);
+      var authContinuation = new jmapDraft.AuthContinuation(payload);
 
       expect(authContinuation.loginId).to.equal(payload.loginId);
       expect(authContinuation.methods).to.deep.equal(payload.methods);
@@ -68,7 +68,7 @@ describe('The AuthContinuation class', function() {
             { type: 'password' }
           ]
         };
-        var authContinuation = new jmap.AuthContinuation(payload);
+        var authContinuation = new jmapDraft.AuthContinuation(payload);
 
         authContinuation.getMethod(null);
       }).to.throw(Error);
@@ -82,7 +82,7 @@ describe('The AuthContinuation class', function() {
             { type: 'password' }
           ]
         };
-        var authContinuation = new jmap.AuthContinuation(payload);
+        var authContinuation = new jmapDraft.AuthContinuation(payload);
 
         authContinuation.getMethod('oauth');
       }).to.throw(Error);
@@ -96,9 +96,9 @@ describe('The AuthContinuation class', function() {
           { type: 'password' }
         ]
       };
-      var authContinuation = new jmap.AuthContinuation(payload);
+      var authContinuation = new jmapDraft.AuthContinuation(payload);
 
-      expect(authContinuation.getMethod('password')).to.be.an.instanceof(jmap.AuthMethod);
+      expect(authContinuation.getMethod('password')).to.be.an.instanceof(jmapDraft.AuthMethod);
     });
   });
 
@@ -111,7 +111,7 @@ describe('The AuthContinuation class', function() {
             { type: 'password' }
           ]
         };
-        var authContinuation = new jmap.AuthContinuation(payload);
+        var authContinuation = new jmapDraft.AuthContinuation(payload);
 
         authContinuation.supports(null);
       }).to.throw(Error);
@@ -125,7 +125,7 @@ describe('The AuthContinuation class', function() {
           { type: 'password' }
         ]
       };
-      var authContinuation = new jmap.AuthContinuation(payload);
+      var authContinuation = new jmapDraft.AuthContinuation(payload);
 
       expect(authContinuation.supports('password')).to.be.true;
     });
@@ -137,7 +137,7 @@ describe('The AuthContinuation class', function() {
           { type: 'password' }
         ]
       };
-      var authContinuation = new jmap.AuthContinuation(payload);
+      var authContinuation = new jmapDraft.AuthContinuation(payload);
 
       expect(authContinuation.supports('oauth')).to.be.false;
     });
