@@ -2152,6 +2152,30 @@ describe('The Client class', function() {
       return client;
     }
 
+    it('should not call getMailboxWithRole if the drafts Mailbox is already available', function(done) {
+      var client = saveAsDraftReadyClient();
+
+      client.getMailboxWithRole = sinon.spy();
+      client.transport.post = function() {
+        return q([['messagesSet', {
+          created: {
+            expectedClientId: {
+              blobId: 'm-ma294202da',
+              id: 'ma294202da',
+              size: 281,
+              threadId: 'ta294202da'
+            }
+          }
+        }, '#0']]);
+      };
+
+      client.saveAsDraft(new jmapDraft.OutboundMessage(jmapDraft), new jmapDraft.Mailbox(jmapDraft, 'drafts', 'drafts', { role: jmapDraft.MailboxRole.DRAFTS })).then(function(a) {
+        expect(client.getMailboxWithRole).to.have.not.been.calledWith();
+
+        done();
+      }, done);
+    });
+
     it('should assign the draft mailbox id in mailboxIds', function(done) {
       var client = saveAsDraftReadyClient();
 
