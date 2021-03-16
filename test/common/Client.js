@@ -152,6 +152,37 @@ describe('The Client class', function() {
     });
   });
 
+  describe('The withJmapVersionHeader method', function() {
+    it('should send correct HTTP headers without jmapVersion by default', function(done) {
+      new jmapDraft.Client({
+        post: function(url, headers) {
+          expect(headers.Accept).to.equal('application/json; charset=UTF-8');
+
+          return q.reject();
+        }
+      })
+        .withAPIUrl('https://test')
+        .withAuthenticationToken('token')
+        .getAccounts()
+        .then(null, done);
+    });
+
+    it('should send correct HTTP headers with jmapVersion', function(done) {
+      new jmapDraft.Client({
+        post: function(url, headers) {
+          expect(headers.Accept).to.equal('application/json; charset=UTF-8; jmapVersion=draft');
+
+          return q.reject();
+        }
+      })
+        .withAPIUrl('https://test')
+        .withAuthenticationToken('token')
+        .withJmapVersionHeader()
+        .getAccounts()
+        .then(null, done);
+    });
+  });
+
   describe('The getAccounts method', function() {
 
     function defaultAccounts(id) {
