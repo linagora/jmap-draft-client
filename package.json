@@ -1,6 +1,6 @@
 {
   "name": "jmap-draft-client",
-  "version": "0.1.4-dev",
+  "version": "0.1.4a",
   "repository": "linagora/jmap-draft-client",
   "description": "This lib help to make requests against a JMAP server",
   "main": "dist/jmap-draft-client.js",
