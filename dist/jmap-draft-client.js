@@ -4251,7 +4251,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = {
-  VERSION: '0.1.4a',
+  VERSION: '0.1.5',
   CLIENT_NAME: 'jmap-draft-client (https://github.com/linagora/jmap-draft-client)',
   SUCCESS_RESPONSE_CODES: [200, 201],
   ERROR: 'error',
